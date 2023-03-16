@@ -163,7 +163,7 @@ extension StringAnyDictionary {
         var foundPrefix = typeName.components(separatedBy: ".").first!
         if result == nil && !typeName.contains(".") {
             
-            if RabacMgr.IS_DEBUG && codingRegisteredIffyPrefixes.count > 30 {
+            if RabacDebug.IS_DEBUG && codingRegisteredIffyPrefixes.count > 30 {
                 dlog?.warning("codingRegisteredIffyPrefixes has > 30 prefixs! The prefixes are supposed to signify app / framework modules. Please refrain from abusing the prefixes.")
             }
             
@@ -230,7 +230,7 @@ class UnkeyedDecodingUtil {
                 if let aatype = aatype as? LosslessStringConvertible.Type {
                     let val = aatype.init(value.trimmingPrefix("."))
                     // Logging
-                    if RabacMgr.IS_DEBUG {
+                    if RabacDebug.IS_DEBUG {
                         if dlog != nil {
                             dlog?.successOrFail(condition: val != nil, "decode: \(aatype) val:\(val.descOrNil)")
                         } else if val == nil {

@@ -22,17 +22,18 @@ class ObserversArrayLock : NSLock {
             var wasLong = false
         
             // Debug LONG LOCKS
-            if ObserversArrayLock.DEBUG_LONG_LOCKS == true {
-                DispatchQueue.global().async {
-                    ObserversArrayLock.locksDebugged.append(memStr)
-                }
-                DispatchQueue.global().asyncAfter(delayFromNow: 6.0, block: {
-                    if ObserversArrayLock.locksDebugged.contains(memStr) {
-                        wasLong = true
-                        // dlog?.warning("DEADLOCK? lockBlock is locked for more than 6.0 seconds. Is this planned? Pause to see blocked threads. memStr:\(memStr)")
-                    }
-                })
-            }
+            // TODO: Connect to asyncer
+//            if ObserversArrayLock.DEBUG_LONG_LOCKS == true {
+//                DispatchQueue.global().async {
+//                    ObserversArrayLock.locksDebugged.append(memStr)
+//                }
+//                DispatchQueue.global().asyncAfter(delayFromNow: 6.0, block: {
+//                    if ObserversArrayLock.locksDebugged.contains(memStr) {
+//                        wasLong = true
+//                        // dlog?.warning("DEADLOCK? lockBlock is locked for more than 6.0 seconds. Is this planned? Pause to see blocked threads. memStr:\(memStr)")
+//                    }
+//                })
+//            }
         #endif
         
         if self.try() {
@@ -44,16 +45,17 @@ class ObserversArrayLock : NSLock {
         
         #if DEBUG
             if ObserversArrayLock.DEBUG_LONG_LOCKS == true {
-                DispatchQueue.global().async {
-                    ObserversArrayLock.locksDebugged.remove(elementsEqualTo:memStr)
-                    
-                }
-                
-                DispatchQueue.global().asyncAfter(delayFromNow: 6.03, block: {
-                    if wasLong {
-                        // dlog?.success("lockBlock was unlocked. memStr:\(memStr)")
-                    }
-                })
+                // TODO: Connect to syncer
+//                DispatchQueue.global().async {
+//                    ObserversArrayLock.locksDebugged.remove(elementsEqualTo:memStr)
+//
+//                }
+//
+//                DispatchQueue.global().asyncAfter(delayFromNow: 6.03, block: {
+//                    if wasLong {
+//                        // dlog?.success("lockBlock was unlocked. memStr:\(memStr)")
+//                    }
+//                })
             }
         #endif
     }
@@ -239,9 +241,10 @@ class ObserversArray <T/*Protocol this observerArray servs to the observers*/> {
             // NIO. Sync threads main does not work:
             exec()
         #else
-        DispatchQueue.main.safeSync {
-            exec()
-        }
+        // TODO: Connect to syncer
+//        DispatchQueue.main.safeSync {
+//            exec()
+//        }
         #endif
         
             
@@ -281,23 +284,24 @@ class ObserversArray <T/*Protocol this observerArray servs to the observers*/> {
     ///   - block: a block for the caller to handle each observer at a time (will be called on the givven queue)
     ///   - completed: when all observers have been called, this block is called on the original thread
     func enumerateOnQueue(queue:DispatchQueue, block:@escaping(_ observer:T)->Void, completed : (()->Void)? = nil) {
-        queue.safeSync {
-            self.lock.lockBlock {
-                
-                // Enumerating in reverse order prevents a race condition from happening when removing elements.
-                for (index, observerInArray) in self.weakObservers.enumerated().reversed() {
-                    // Since these are weak references, "value" may be nil
-                    // at some point when ARC is 0 for the object.
-                    if let observer = observerInArray.value {
-                        block(observer as! T)
-                    } else {
-                        // Else, ARC killed it, get rid of the element from our
-                        // array
-                        self.weakObservers.remove(at:index)
-                    }
-                }
-            } // Unlock
-        }
+        // TODO: Connect to syncer
+//        queue.safeSync {
+//            self.lock.lockBlock {
+//
+//                // Enumerating in reverse order prevents a race condition from happening when removing elements.
+//                for (index, observerInArray) in self.weakObservers.enumerated().reversed() {
+//                    // Since these are weak references, "value" may be nil
+//                    // at some point when ARC is 0 for the object.
+//                    if let observer = observerInArray.value {
+//                        block(observer as! T)
+//                    } else {
+//                        // Else, ARC killed it, get rid of the element from our
+//                        // array
+//                        self.weakObservers.remove(at:index)
+//                    }
+//                }
+//            } // Unlock
+//        }
         
         // Call completion on the current thread
         completed?()

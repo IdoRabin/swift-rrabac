@@ -51,23 +51,23 @@ class GDCAsyncer : Asyncable {
             return
         }
         
-        queue.asyncAfter(deadline: T##Dispatch.DispatchTime, execute: T##Dispatch.DispatchWorkItem)
+        // queue.asyncAfter(deadline: T##Dispatch.DispatchTime, execute: T##Dispatch.DispatchWorkItem)
     }
     
     func performOnce(uniqueToken: String, persistSessions:Bool, block: () -> Void) -> Bool {
-        
+        return false
     }
     
     func performOncePerInstance(_ instance: Any, block: () -> Void) -> Bool {
-        
+        return false
     }
     
     func performOncePerSession(block: () -> Void) -> Bool {
-        
+        return false
     }
     
     func performOncePerInstall(token: String, forAnyQueue: Bool, isDebugIgnore: Bool, block: () -> Void) -> Bool {
-        
+        return false
     }
     
     func debounce(delay: TimeInterval, uniqueKey:String? = nil, execOption: AsyncExecOption, block: @escaping () -> Void) {

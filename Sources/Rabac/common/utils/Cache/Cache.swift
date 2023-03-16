@@ -435,10 +435,10 @@ class Cache<Key : Hashable, Value : Hashable> {
         
         // Will not flush all the time
         // TODO: Replace with asyncer debounced call
-        TimedEventFilter.shared.filterEvent(key: "Cache_\(name)_flushToDatesIfNeeded", threshold: 0.2) {[self] in
-            let clearedCount = self.clear(olderThan: olderThanSeconds)
-            self.log("flushToDatesIfNeeded: cleared \(clearedCount) items older than: \(olderThanSeconds) sec. ago. \(self.count) remaining.")
-        }
+//        TimedEventFilter.shared.filterEvent(key: "Cache_\(name)_flushToDatesIfNeeded", threshold: 0.2) {[self] in
+//            let clearedCount = self.clear(olderThan: olderThanSeconds)
+//            self.log("flushToDatesIfNeeded: cleared \(clearedCount) items older than: \(olderThanSeconds) sec. ago. \(self.count) remaining.")
+//        }
     }
     
     func flushIfNeeded() {
@@ -1221,12 +1221,13 @@ class AutoSavedCache <Key : CodableHashable, Value : CodableHashable> : Cache<Ke
         super.needsSaveWasSetEvent()
         
         // Replace with asyncer debounced call
-        TimedEventFilter.shared.filterEvent(key: "\(self.name)_AutoSavedCacheEvent", threshold: max(self.autoSaveTimeout, 0.03)) {
-            self.flushToDatesIfNeeded()
-            
-            self.log("AutoSavedCache saveIfNeeded called")
-            _ = self.saveIfNeeded()
-        }
+        // TODO: Replace with asyncer debounced call
+//        TimedEventFilter.shared.filterEvent(key: "\(self.name)_AutoSavedCacheEvent", threshold: max(self.autoSaveTimeout, 0.03)) {
+//            self.flushToDatesIfNeeded()
+//            
+//            self.log("AutoSavedCache saveIfNeeded called")
+//            _ = self.saveIfNeeded()
+//        }
     }
 }
 

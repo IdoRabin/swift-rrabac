@@ -302,7 +302,7 @@ extension Dictionary where Value : Sequence, Value.Element : Equatable {
         })
         
         let amtRemoved = sequence.remove(elementsEqualTo: element)
-        if RabacMgr.IS_DEBUG && amtRemoved != removed?.count {
+        if RabacDebug.IS_DEBUG && amtRemoved != removed?.count {
             preconditionFailure("Dictionary<K:any,V:[Equatable]> remove(_:forKey:) failed since amtRemoved \(amtRemoved) != \(removed?.count ?? 0) removed elems: \((removed ?? []).descriptionLines)")
         }
         

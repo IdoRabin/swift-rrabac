@@ -124,10 +124,10 @@ extension String /* helper functions relevant to vapor URL requests, params, bas
         if isLogIssues {
             if result?.count ?? 0 == self.count {
                 dlog?.warning("removingPercentEncodingEx result equal length to the input string! [\(self)].count == [\(result.descOrNil)].count")
-            } else if RabacMgr.IS_DEBUG && result?.count ?? 0 == self.count  {
+            } else if RabacDebug.IS_DEBUG && result?.count ?? 0 == self.count  {
                 // Same size
                 dlog?.warning("failed to decode & remove percent encoding from: [\(self)]!!")
-            } else if RabacMgr.IS_DEBUG && result == nil  {
+            } else if RabacDebug.IS_DEBUG && result == nil  {
                 // Same size
                 dlog?.warning("failed to decode & remove percent encoding from: [\(self)]!!")
             }
@@ -137,7 +137,7 @@ extension String /* helper functions relevant to vapor URL requests, params, bas
     }
     
     var removingPercentEncodingEx : String? {
-        return self.removingPercentEncodingExf(isLogIssues: RabacMgr.IS_DEBUG && dlog != nil)
+        return self.removingPercentEncodingExf(isLogIssues: RabacDebug.IS_DEBUG && dlog != nil)
     }
     
     /// Convert Base64 encoded string to a dictionary, assuming the content is a url-percent-escaped / encoded query string. Will also remove percent encoding from key or value parts after reverting from base64.

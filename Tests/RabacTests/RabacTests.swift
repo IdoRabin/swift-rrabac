@@ -24,7 +24,7 @@ final class RabacTests: XCTestCase {
     
     override class func setUp() {
         DSLogger.IS_LOGS_ENABLED = true
-        RabacMgr.IS_DEBUG = true
+        RabacDebug.IS_DEBUG = true
         
         let mgr = RabacMgr.shared
         mgr.registerPathParam(keyName: "user_id", type: DebugUserId.self, possibleRegexes: [UUID.REGEX])

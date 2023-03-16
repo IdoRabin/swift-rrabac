@@ -39,22 +39,22 @@ enum AsyncOnceOption : Int {
     }
 }
 
-struct AsyncToken : LosslessStringConvertible {
-    
-    private _option : AsyncOnceOption = .token
-    private _token : String
-    
-    // MARK: Lifecycle
-    fileprivate init(type:AsyncOnceOption, token:String) {
-        _option = type
-        _token = token
-    }
-    
-    // MARK: LosslessStringConvertible
-    var description: String {
-        return "\(self._option.asString)_\(_token)"
-    }
-}
+//struct AsyncToken : LosslessStringConvertible {
+//
+//    private _option : AsyncOnceOption = .token
+//    private _token : String
+//
+//    // MARK: Lifecycle
+//    fileprivate init(type:AsyncOnceOption, token:String) {
+//        _option = type
+//        _token = token
+//    }
+//
+//    // MARK: LosslessStringConvertible
+//    var description: String {
+//        return "\(self._option.asString)_\(_token)"
+//    }
+//}
 
 protocol AsyncableExecutor { /* intentionally empty */ }
 
@@ -76,7 +76,7 @@ protocol Asyncable {
 
 protocol AsyncablePerformancreTokenCache {
     func isTokenExists(token:String)->Bool
-    func setToken(token:String,)
+    func setToken(token:String)
     func clearToken(token:String)->Bool
     func clearAllPerInstance()
     func clearAllPerSession()
@@ -86,7 +86,7 @@ protocol AsyncablePerformancreTokenCache {
     
 extension Asyncable /* default inplementation */ {
     func wasPermformedOnce(token:String)->Bool {
-        
+        return false
     }
 }
 
