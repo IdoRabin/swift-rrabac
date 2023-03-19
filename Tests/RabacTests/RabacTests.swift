@@ -47,7 +47,7 @@ final class RabacTests: XCTestCase {
                 try RabacResource(title: str)
             }.uniqueElements()
             
-            let matches = try [
+            let matchers = try [
                 "my/path1/*", "my/ex", "my/path1/**",
                 "my/**/one", "**/**/one",
                 "user/:user_id/*/more"
@@ -81,30 +81,30 @@ final class RabacTests: XCTestCase {
                 return arr.contains(resc, isCaseSensitive: false)
             }
             
-            
-            for mat in matches {
-                if let route1 = mat.rabacId.title.rabacRoute {
+            // Enumerate
+            matchers.forEachIndex({ index, matcher in
+                if let route1 = matcher.rabacId.title.rabacRoute {
                     dlog?.info(".testResources() for path: \(route1)")
                     for res in resources {
                         if let route2 = res.rabacRoute {
                             
                             // TODO: Remove this .. Debugging:
-                            let matPath = mat.rabacId.title.trimming(string: "/")
+                            let matPath = matcher.rabacId.title.trimming(string: "/")
                             let resPath = res.rabacId.title.trimming(string: "/")
                             let isExpectedToMatch = isExpectedToMatch(match: matPath, resc: resPath)
                             let matchResult = route1.matchesRoute(route2)
                             
                             if matchResult.isSuccess == isExpectedToMatch {
                                 if matchResult.isSuccess {
-                                    dlog?.verbose(log: .success, ".testResources()      success. matching route2: \(mat.rabacId.title) with: \(res.rabacId.title)")
+                                    dlog?.verbose(log: .success, ".testResources()      success. matching route2: \(matcher.rabacId.title) with: \(res.rabacId.title)")
                                 } else {
-                                    dlog?.verbose(log: .success, ".testResources()      success. was not expecting a match between route2: \(mat.rabacId.title) with: \(res.rabacId.title). error: \(matchResult.errorValue.descOrNil)")
+                                    dlog?.verbose(log: .success, ".testResources()      success. was not expecting a match between route2: \(matcher.rabacId.title) with: \(res.rabacId.title). error: \(matchResult.errorValue.descOrNil)")
                                 }
                             } else {
                                 if matchResult.isSuccess {
-                                    dlog?.verbose(log: .fail, ".testResources()      success matching route2: \(mat.rabacId.title) with: \(res.rabacId.title). But was not expecting a match.")
+                                    dlog?.verbose(log: .fail, ".testResources()      success matching route2: \(matcher.rabacId.title) with: \(res.rabacId.title). But was not expecting a match.")
                                 } else {
-                                    dlog?.verbose(log: .fail, ".testResources()      failed matching - was  expecting a match between route2: \(mat.rabacId.title) with: \(res.rabacId.title). error: \(matchResult.errorValue.descOrNil)")
+                                    dlog?.verbose(log: .fail, ".testResources()      failed matching - was  expecting a match between route2: \(matcher.rabacId.title) with: \(res.rabacId.title). error: \(matchResult.errorValue.descOrNil)")
                                 }
                                 XCTFail(".testResources()      match was expected to \(isExpectedToMatch ? "succeed" : "fail") but instead \(matchResult.isSuccess ? "matched" : "failed") error: \(matchResult.errorValue.descOrNil)")
                             }
@@ -113,9 +113,9 @@ final class RabacTests: XCTestCase {
                         }
                     }
                 } else {
-                    XCTFail(".testResources() matches failed creating route1: \(mat.rabacId.title) as .rabacRoute")
+                    XCTFail(".testResources() matches failed creating route1: \(matcher.rabacId.title) as .rabacRoute")
                 }
-            }
+            })
         } catch let error {
             XCTFail(".testResources() threw: \(error)")
         }

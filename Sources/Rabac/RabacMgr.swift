@@ -30,7 +30,11 @@ final public class RabacMgr {
     fileprivate (set) var paramTypes : [String:RabacParameterRecord] = [:]
     // TODO: fileprivate (set) var validationsCache : Cache<String, Bool>(nam)
     
-    @SkipEncode var whenLoaded : [(_ error : Error?)->Void] = []
+    @SkipEncode var whenLoaded : [(_ error : Error?)->Void] = [] {
+        didSet {
+            
+        }
+    }
     
     // MARK: Singleton
     public static let shared = RabacMgr()
