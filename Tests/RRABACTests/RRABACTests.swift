@@ -1,5 +1,5 @@
 import XCTest
-@testable import RRABAC
+@testable import RRabac
 
 final class RRABACTests: XCTestCase {
     func testExample() throws {

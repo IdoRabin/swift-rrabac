@@ -15,9 +15,12 @@ let package = Package(
             targets: ["RRabac"]),
     ],
     dependencies: [
-        // In-House pakcages
-       .package(path: "../../xcode/DSLogger"),
-       .package(path: "../../xcode/MNUtils/MNUtils"),
+        .package(url: "https://github.com/vapor/vapor.git", from: "4.76.0"),
+        .package(url: "https://github.com/vapor/fluent.git", from: "4.8.0"),
+        
+        /// In-House pakcages
+        .package(url: "https://gitlab.com/ido_r_demos/dslogger.git", from: "0.0.1"),
+        .package(url: "https://gitlab.com/ido_r_demos/mnutils.git", from: "0.0.1"),
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
@@ -27,11 +30,18 @@ let package = Package(
             dependencies: [
                 // In-House pakcages
                 .product(name: "DSLogger", package: "DSLogger"),
-                .product(name: "MNUtils", package: "MNUtils")
+                .product(name: "MNUtils", package: "MNUtils"),
+                
+                .product(name: "Fluent", package: "fluent"),
+                .product(name: "Vapor", package: "vapor"),
+            ],
+            swiftSettings: [
+                .define("VAPOR"), // Vapor framework, to distinguish in classes that are also used in iOS / macOS.
+                .define("NIO"),
             ]
         ),
         .testTarget(
             name: "RRabacTests",
-            dependencies: ["RRABAC"]),
+            dependencies: ["RRabac"]),
     ]
 )

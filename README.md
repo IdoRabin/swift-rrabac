@@ -1,6 +1,4 @@
-<<<<<<< HEAD
 # RABAC
-
 
 
 ## Getting started
@@ -95,4 +93,3 @@ If you have run out of energy or time for your project, put a note at the top of
 # RRABAC
 
 A description of this package.
->>>>>>> f3bd8e5 (Initial Commit)
