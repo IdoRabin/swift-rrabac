@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
     name: "RRabac",
     platforms: [
-        .macOS(.v12)
+        .macOS(.v13)
     ],
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.
@@ -20,7 +20,8 @@ let package = Package(
         
         /// In-House pakcages
         .package(url: "https://gitlab.com/ido_r_demos/dslogger.git", from: "0.0.1"),
-        .package(url: "https://gitlab.com/ido_r_demos/mnutils.git", from: "0.0.1"),
+        .package(url: "https://gitlab.com/ido_r_demos/mnutils.git", from: "0.0.2"),
+        .package(path:"../MNVaporUtils/")
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
@@ -31,6 +32,7 @@ let package = Package(
                 // In-House pakcages
                 .product(name: "DSLogger", package: "DSLogger"),
                 .product(name: "MNUtils", package: "MNUtils"),
+                .product(name: "MNVaporUtils", package: "MNVaporUtils"),
                 
                 .product(name: "Fluent", package: "fluent"),
                 .product(name: "Vapor", package: "vapor"),

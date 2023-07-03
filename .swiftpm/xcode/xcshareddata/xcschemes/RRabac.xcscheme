@@ -10,7 +10,7 @@
             ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
             <ActionContent
                title = "Run Script"
-               scriptText = "cd /Users/syncme/vapor/RRabac/&#10;python3 Scripts/bump_build_nr.py -b /Users/syncme/vapor/RRabac/Sources/RRabac&#10;">
+               scriptText = "cd /Users/syncme/vapor/RRabac/&#10;python3 Scripts/bump_build_nr.py -b /Users/syncme/vapor/RRabac/Sources/RRabac/Version.swift&#10;">
             </ActionContent>
          </ExecutionAction>
       </PreActions>

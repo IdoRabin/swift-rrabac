@@ -28,15 +28,6 @@
       }
     },
     {
-      "identity" : "dslogger",
-      "kind" : "remoteSourceControl",
-      "location" : "https://gitlab.com/ido_r_demos/dslogger.git",
-      "state" : {
-        "revision" : "6148cbb185f08b591068307885b3c8a09b27f302",
-        "version" : "0.0.1"
-      }
-    },
-    {
       "identity" : "fluent",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/vapor/fluent.git",
@@ -55,12 +46,48 @@
       }
     },
     {
-      "identity" : "mnutils",
+      "identity" : "fluent-postgres-driver",
       "kind" : "remoteSourceControl",
-      "location" : "https://gitlab.com/ido_r_demos/mnutils.git",
+      "location" : "https://github.com/vapor/fluent-postgres-driver.git",
       "state" : {
-        "revision" : "f230cebe9259ea8b768a3eeae0d7e715255fc509",
-        "version" : "0.0.1"
+        "revision" : "bb3ab8e861152157f712cd08fc473e885bd0b4df",
+        "version" : "2.7.2"
+      }
+    },
+    {
+      "identity" : "jwt",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/vapor/jwt.git",
+      "state" : {
+        "revision" : "d65f32bfd08fae5910d603028be5dec4f35b3482",
+        "version" : "4.2.2"
+      }
+    },
+    {
+      "identity" : "jwt-kit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/vapor/jwt-kit.git",
+      "state" : {
+        "revision" : "268cdf5e7f524f859bcf94d25a106e942e210075",
+        "version" : "4.10.0"
+      }
+    },
+    {
+      "identity" : "leaf",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/vapor/leaf.git",
+      "state" : {
+        "revision" : "6fe0e843c6599f5189e45c7b08739ebc5c410c3b",
+        "version" : "4.2.4"
+      }
+    },
+    {
+      "identity" : "leaf-kit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/vapor/leaf-kit.git",
+      "state" : {
+        "revision" : "13f2fc4c8479113cd23876d9a434ef4573e368bb",
+        "version" : "1.10.2"
       }
     },
     {
@@ -70,6 +97,24 @@
       "state" : {
         "revision" : "1adfd69df2da08f7931d4281b257475e32c96734",
         "version" : "4.5.4"
+      }
+    },
+    {
+      "identity" : "postgres-kit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/vapor/postgres-kit.git",
+      "state" : {
+        "revision" : "a88d025748edd3a2f9f2e74091ecccc20d20fe30",
+        "version" : "2.11.3"
+      }
+    },
+    {
+      "identity" : "postgres-nio",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/vapor/postgres-nio.git",
+      "state" : {
+        "revision" : "061a0836d7c1887e04a975d1d2eaa2ef5fd7dfab",
+        "version" : "1.16.0"
       }
     },
     {

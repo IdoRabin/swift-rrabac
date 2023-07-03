@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  Version.swift
 //  
 //
 //  Created by Ido on 05/06/2023.
@@ -22,10 +22,10 @@ enum PreRelease: String {
 // Swift package PackageDescription also has a Sever2 Version struct defined, but we will be using:
 
 // Hard coded app version:
-let RRABAC_NAME_STR = Bundle.main.bundleName ?? "Bricks Server"
+let RRABAC_NAME_STR = Bundle.main.bundleName ?? "RRabac"
 
 // String fields allow only alphanumerics and a hyphen (-)
-let RRABAC_BUILD_NR: Int = 20
+let RRABAC_BUILD_NR: Int = 55
 let RRABAC_BUILD_VERSION = Semver(
     major: 0,
     minor: 1,

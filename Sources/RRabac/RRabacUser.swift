@@ -11,13 +11,14 @@ import Fluent
 import MNUtils
 import DSLogger
 
-public protocol RRabacUserable {
+public protocol Userable {
     var id: UUID? { get }
     var username: String? { get }
     var email: String? { get }
+    var domain: String? { get }
 }
 
-final public class RRabacUser: Model, Content, MNUIDable {
+final public class RRabacUser: Model, Content, MNUIDable, Userable {
     public static let schema = "users"
     
     @ID(key: .id)
@@ -29,11 +30,14 @@ final public class RRabacUser: Model, Content, MNUIDable {
         return RRabacUserUID(uid: uid)
     }
     
-    @Field(key: "name")
-    public var name: String
+    @Field(key: "username")
+    public var username: String?
     
     @Field(key: "email")
-    public var email: String
+    public var email: String?
+    
+    @Field(key: "domain")
+    public var domain: String?
     
     @Siblings(through: RRabacUserRole.self, from: \.$user, to: \.$role)
     public var roles: [RRabacRole]
@@ -43,9 +47,9 @@ final public class RRabacUser: Model, Content, MNUIDable {
 
     public init() {}
 
-    public init(id: UUID? = nil, name: String, email: String) {
+    public init(id: UUID? = nil, username: String, email: String) {
         self.id = id
-        self.name = name
+        self.username = username
         self.email = email
     }
 }

@@ -9,6 +9,7 @@ import Foundation
 import Vapor
 import Fluent
 import MNUtils
+import MNVaporUtils
 import DSLogger
 
 fileprivate let dlog : DSLogger? = DLog.forClass("RRabacMiddleware")
@@ -28,7 +29,7 @@ public protocol RRabacPermissionGiver {
     func isAllowed(for selfUser:RRabacUser?,
                    to action:AnyCodable,
                    on subject:RRabacPermissionSubject?,
-                   during req:Request?,
+                   during req:Request?,  
                    params:[String:Any]?)->RRabacPermission
 }
 
@@ -46,13 +47,16 @@ final public class RRabacMiddleware: Middleware, LifecycleBootableHandler {
     init(errorWebpagePaths: Set<String>, errPageCheck : IsVaporRequestSomeTestBlock? = nil) {
         self.errorWebpagePaths = errorWebpagePaths
         self.isErrorPageNoPermissionNeeded = errPageCheck ?? {(_ request: Vapor.Request) -> IsVaporRequestResult in
-            var result : IsVaporRequestResult = .success(true)
-            if errorWebpagePaths.containsSubstring(request.url.asNormalizedPathOnly()) {
+            let urlPath = request.url.asNormalizedPathOnly()
+            var result : IsVaporRequestResult = .failure(MNError(code:.misc_unknown, reason: "Failed detecting if \(urlPath) is an error page."))
+            if errorWebpagePaths.containsSubstring(urlPath) {
                 result = .success(true)
             }
-            if errorWebpagePaths.containsSubstring(request.url.asNormalizedPathOnly()) {
+            if errorWebpagePaths.containsSubstring(urlPath) {
                 result = .success(true)
             }
+            
+            return result
         }
     }
     
