@@ -33,8 +33,6 @@ public protocol RRabacPermissionGiver {
                    params:[String:Any]?)->RRabacPermission
 }
 
-#if VAPOR
-
 public typealias IsVaporRequestResult = MNResult<Bool /*, MNError */>
 public typealias IsVaporRequestSomeTestBlock = (_ request: Vapor.Request)->IsVaporRequestResult
 
@@ -44,7 +42,7 @@ final public class RRabacMiddleware: Middleware, LifecycleBootableHandler {
     private var errorWebpagePaths = Set<String>()
     
     // MARK: Lifecycle
-    init(errorWebpagePaths: Set<String>, errPageCheck : IsVaporRequestSomeTestBlock? = nil) {
+    init(env:Environment, errorWebpagePaths: Set<String>, errPageCheck : IsVaporRequestSomeTestBlock? = nil) {
         self.errorWebpagePaths = errorWebpagePaths
         self.isErrorPageNoPermissionNeeded = errPageCheck ?? {(_ request: Vapor.Request) -> IsVaporRequestResult in
             let urlPath = request.url.asNormalizedPathOnly()
@@ -86,11 +84,11 @@ final public class RRabacMiddleware: Middleware, LifecycleBootableHandler {
         return promise.futureResult
     }
     
-    
+    public struct Config {
+        public let errorWebpagePaths : [String]
+    }
 }
 
-extension RRabacMiddleware {
+public extension RRabacMiddleware {
     
 }
-
-#endif
