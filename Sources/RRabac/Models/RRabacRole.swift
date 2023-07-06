@@ -11,8 +11,8 @@ import Fluent
 import MNUtils
 import DSLogger
 
-final public class RRabacRole: Model, Content, MNUIDable {
-    public  static let schema = "roles"
+final public class RRabacRole: RRabacModel {
+    public  static let schema = "rrabac_roles"
 
     @ID(key: .id)
     public var id: UUID?

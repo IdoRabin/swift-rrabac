@@ -12,55 +12,44 @@ import MNUtils
 import MNVaporUtils
 import DSLogger
 
-fileprivate let dlog : DSLogger? = DLog.forClass("RRabacMiddleware")
+fileprivate let dlog : DSLogger? = DLog.forClass("RRabacMiddleware")?.setting(verbose: true)
 
-public enum RRabacPermissionSubject : JSONSerializable, Hashable {
-    case users([MNUID])
-    case files([String])
-    case routes([String])
-    case webpages([String])
-    case models([String])
-    case commands([String])
-    case underermined
-}
-
-public protocol RRabacPermissionGiver {
-    
-    func isAllowed(for selfUser:RRabacUser?,
-                   to action:AnyCodable,
-                   on subject:RRabacPermissionSubject?,
-                   during req:Request?,  
-                   params:[String:Any]?)->RRabacPermission
-}
-
+typealias RRabacModel = Model & Content & MNUIDable & AsyncResponseEncodable & Migration
 public typealias IsVaporRequestResult = MNResult<Bool /*, MNError */>
 public typealias IsVaporRequestSomeTestBlock = (_ request: Vapor.Request)->IsVaporRequestResult
 
-final public class RRabacMiddleware: Middleware, LifecycleBootableHandler {
+final public class RRabacMiddleware: Middleware {
     
     public typealias RResponse = NIOCore.EventLoopFuture<Vapor.Response>
-    private var errorWebpagePaths = Set<String>()
-    
-    // MARK: Lifecycle
-    init(env:Environment, errorWebpagePaths: Set<String>, errPageCheck : IsVaporRequestSomeTestBlock? = nil) {
-        self.errorWebpagePaths = errorWebpagePaths
-        self.isErrorPageNoPermissionNeeded = errPageCheck ?? {(_ request: Vapor.Request) -> IsVaporRequestResult in
-            let urlPath = request.url.asNormalizedPathOnly()
-            var result : IsVaporRequestResult = .failure(MNError(code:.misc_unknown, reason: "Failed detecting if \(urlPath) is an error page."))
-            if errorWebpagePaths.containsSubstring(urlPath) {
-                result = .success(true)
-            }
-            if errorWebpagePaths.containsSubstring(urlPath) {
-                result = .success(true)
-            }
-            
-            return result
-        }
-    }
+    private var config : Config!
     
     // MARK: Public Properties
     public var isErrorPageNoPermissionNeeded : IsVaporRequestSomeTestBlock = {(_ request: Vapor.Request) -> IsVaporRequestResult in
-        return  .success(true)
+        return .success(true)
+    }
+    
+    public struct Config {
+        public let env : Environment
+        public let errorWebpagePaths : Set<String>
+        public let errorPageCheck : IsVaporRequestSomeTestBlock?
+        public let debugAllowAll : Bool
+    }
+    
+    // MARK: Lifecycle
+    private init(config:Config) {
+        self.config = config
+        self.isErrorPageNoPermissionNeeded = config.errorPageCheck ?? {(_ request: Vapor.Request) -> IsVaporRequestResult in
+            let urlPath = request.url.asNormalizedPathOnly()
+            var result : IsVaporRequestResult = .failure(MNError(code:.misc_unknown, reason: "Failed detecting if \(urlPath) is an error page."))
+            guard config.errorWebpagePaths.containsSubstring(urlPath) == false else {
+                return .failure(MNError(code: .misc_no_permission_for_operation, reason: "Failed detecting if \(urlPath) is an error page. (paths checked)"))
+            }
+            
+            dlog?.verbose("isErrorPageNoPermissionNeeded")
+            return result
+        }
+        
+        dlog?.verbose("Init w/ errorPages: \(config.errorWebpagePaths.descriptionsJoined)")
     }
     
     // MARK: Public
@@ -70,7 +59,11 @@ final public class RRabacMiddleware: Middleware, LifecycleBootableHandler {
             return next.respond(to: request)
         }
         
-        // Skip if the page / route is of an error page / no permissions needed
+        if config.debugAllowAll && MNUtils.debug.IS_DEBUG {
+            return skip()
+        }
+        
+        // Skip if the page or route is of an error page / no permissions needed
         let isErrPg = isErrorPageNoPermissionNeeded(request)
         if isErrPg.isSuccess {
             return skip()
@@ -84,11 +77,56 @@ final public class RRabacMiddleware: Middleware, LifecycleBootableHandler {
         return promise.futureResult
     }
     
-    public struct Config {
-        public let errorWebpagePaths : [String]
+    //  MARK: Static funcs
+    public static func Configured (
+        env:Environment,
+        errorWebpagePaths : [String],
+        errorPageCheck : IsVaporRequestSomeTestBlock?
+    )->RRabacMiddleware {
+        return RRabacMiddleware(config: Config(env: env,
+                                               errorWebpagePaths: Set(errorWebpagePaths),
+                                               errorPageCheck: errorPageCheck,
+                                               debugAllowAll: true))
     }
 }
 
-public extension RRabacMiddleware {
+public extension RRabacMiddleware /* + Fluent */ {
+    func allMigrations()->[Migration] {
+        let result : [Migration] = [
+            // RRabac classes / models:
+            RRabacHitsoryItem(),
+            RRabacPermission(),
+            RRabacPermissionResult(),
+            RRabacRole(),
+            RRabacUser(),
+            
+            // Cross-table
+            RRabacRoleGroup(),
+            RRabacRolePermission(),
+            RRabacUserRole(),
+            RRabacUserGroup(),
+        ]
+        
+        return result
+    }
+}
+
+// MARK: LifecycleBootableHandler
+extension RRabacMiddleware : LifecycleBootableHandler {
     
+    public func willBoot(_ application: Application) throws {
+        
+    }
+    
+    public func didBoot(_ application: Application) throws {
+        
+    }
+    
+    public func shutdown(_ application: Application) {
+        
+    }
+    
+    public func boot(_ app: Vapor.Application) throws {
+        
+    }
 }
