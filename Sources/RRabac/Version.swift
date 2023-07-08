@@ -25,7 +25,7 @@ enum PreRelease: String {
 let RRABAC_NAME_STR = Bundle.main.bundleName ?? "RRabac"
 
 // String fields allow only alphanumerics and a hyphen (-)
-let RRABAC_BUILD_NR: Int = 59
+let RRABAC_BUILD_NR: Int = 63
 let RRABAC_BUILD_VERSION = Semver(
     major: 0,
     minor: 1,

@@ -65,7 +65,7 @@ final public class RRabacHitsoryItem : RRabacModel {
     
     // MARK: Migration
     public func prepare(on database: Database) -> EventLoopFuture<Void> {
-        database.schema(RRabacHitsoryItem.schema)
+        return database.schema(Self.schema)
             .id() // primary key
             .field(CodingKeys.permissionResult.fieldKey,  .json,     .required)
             .field(CodingKeys.createdDate.fieldKey,       .datetime, .required)

@@ -14,7 +14,31 @@ import DSLogger
 
 fileprivate let dlog : DSLogger? = DLog.forClass("RRabacMiddleware")?.setting(verbose: true)
 
-typealias RRabacModel = Model & Content & MNUIDable & AsyncResponseEncodable & Migration
+public protocol RRabacModel : Model & Content & MNUIDable & AsyncResponseEncodable & Migration {
+    var migrationName : String  { get }
+}
+
+public extension RRabacModel {
+    var migrationName : String {
+        return "\(type(of:self))".trimmingCharacters(in: .punctuationCharacters)
+    }
+}
+
+public extension Sequence where Element : RRabacModel {
+    
+    var migrationNames : [String] {
+        return self.compactMap { migration in
+            return migration.migrationName
+        }
+    }
+    
+    var shortMigrationNames : [String] {
+        return self.compactMap { migration in
+            return migration.name.split(separator: ".", maxSplits: 1).suffix(from: 1).joined(separator: ".")
+        }
+    }
+}
+
 public typealias IsVaporRequestResult = MNResult<Bool /*, MNError */>
 public typealias IsVaporRequestSomeTestBlock = (_ request: Vapor.Request)->IsVaporRequestResult
 
@@ -50,6 +74,9 @@ final public class RRabacMiddleware: Middleware {
         }
         
         dlog?.verbose("Init w/ errorPages: \(config.errorWebpagePaths.descriptionsJoined)")
+    }
+    deinit {
+        dlog?.info("deinit")
     }
     
     // MARK: Public
@@ -96,15 +123,16 @@ public extension RRabacMiddleware /* + Fluent */ {
             // RRabac classes / models:
             RRabacHitsoryItem(),
             RRabacPermission(),
-            RRabacPermissionResult(),
             RRabacRole(),
-            RRabacUser(),
+            RRabacPermissionResult(),
+//
+//            RRabacUser(),
             
             // Cross-table
-            RRabacRoleGroup(),
-            RRabacRolePermission(),
-            RRabacUserRole(),
-            RRabacUserGroup(),
+//            RRabacRoleGroup(),
+//            RRabacRolePermission(),
+//            RRabacUserRole(),
+//            RRabacUserGroup(),
         ]
         
         return result
@@ -115,18 +143,18 @@ public extension RRabacMiddleware /* + Fluent */ {
 extension RRabacMiddleware : LifecycleBootableHandler {
     
     public func willBoot(_ application: Application) throws {
-        
+        dlog?.info("willBoot")
     }
     
     public func didBoot(_ application: Application) throws {
-        
+        dlog?.info("didBoot")
     }
     
     public func shutdown(_ application: Application) {
-        
+        dlog?.info("shutdown")
     }
     
     public func boot(_ app: Vapor.Application) throws {
-        
+        dlog?.info("boot")
     }
 }

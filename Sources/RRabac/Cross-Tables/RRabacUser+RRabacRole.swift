@@ -8,25 +8,56 @@
 import Foundation
 import Vapor
 import Fluent
-//import MNUtils
+import MNUtils
 //import DSLogger
 
-final class RRabacUserRole: Model {
+final class RRabacUserRole: RRabacModel {
+    
     static let schema = "user_roles"
 
+    // MARK: CodingKeys
+    enum CodingKeys : String, CodingKey, CaseIterable {
+        case id = "id"
+        case user = "user_id"
+        case role = "role_id"
+        
+        var fieldKey : FieldKey {
+            return .string(self.rawValue)
+        }
+    }
+    
+    // MARK: Properties
     @ID(key: .id)
     var id: UUID?
-
-    @Parent(key: "user_id")
+    var mnUID: MNUID? {
+        return RRabacUserRoleUID(uid: id!, typeStr: MNUIDType.userRole)
+    }
+    
+    @Parent(key: CodingKeys.user.fieldKey)
     var user: RRabacUser
 
-    @Parent(key: "role_id")
+    @Parent(key: CodingKeys.role.fieldKey)
     var role: RRabacRole
     
+    //  MARK: Lifecycle
+    // Vapor migration requires empty init
     init() {}
 
     init(userID: UUID, roleID: UUID) {
         self.$user.id = userID
         self.$role.id = roleID
+    }
+    
+    // MARK: Migration
+    public func prepare(on database: Database) -> EventLoopFuture<Void> {
+        return database.schema(Self.schema)
+            .id() // primary key
+            .field(CodingKeys.user.fieldKey, .uuid,  .required)
+            .field(CodingKeys.role.fieldKey, .uuid,  .required)
+            .ignoreExisting().create()
+    }
+    
+    public func revert(on database: Database) -> EventLoopFuture<Void> {
+        return database.schema(Self.schema).delete()
     }
 }

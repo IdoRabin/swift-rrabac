@@ -9,6 +9,7 @@ import Foundation
 import Vapor
 import Fluent
 import MNUtils
+import MNVaporUtils
 import DSLogger
 
 // public typealias RRabacPermissionResult = MNPermission<RRabacPermissionID, MNError>
@@ -18,9 +19,12 @@ final public class RRabacPermissionResult: RRabacModel {
     // MARK: CodingKeys
     enum CodingKeys : String, CodingKey, CaseIterable {
         case id = "id"
-        case action = "action"
         case error = "error"
         case notes = "notes"
+        case requesterId = "requester_id"
+        case granterId = "granter_id"
+        case requestedResourceId = "requested_resource_id"
+        case action = "action"
         
         var fieldKey : FieldKey {
             return .string(self.rawValue)
@@ -36,6 +40,15 @@ final public class RRabacPermissionResult: RRabacModel {
         }
         return RRabacPermissionUID(uid: uid)
     }
+    
+    @OptionalField(key: CodingKeys.requesterId.fieldKey)
+    public var requesterId: MNUID?
+    
+    @Field(key: CodingKeys.granterId.fieldKey)
+    public var granterId: MNUID
+    
+    @Field(key: CodingKeys.requestedResourceId.fieldKey)
+    public var requestedResourceId: MNUID
     
     @Enum(key: CodingKeys.action.fieldKey)
     public var action: RRabacCRUDAction
@@ -53,7 +66,10 @@ final public class RRabacPermissionResult: RRabacModel {
         self.action = .read
         self.error = nil
         self.notes = nil
+        self.requesterId = nil
         
+        self.granterId = MNUID.init(uid: UUID.empty, typeStr: MNUIDType.user)
+        self.requestedResourceId = MNUID(uid: UUID.empty, typeStr: MNUIDType.user)
     }
 
     fileprivate init(id:UUID, action: RRabacCRUDAction, error: MNError? = nil, notes:String? = nil) {
@@ -65,16 +81,24 @@ final public class RRabacPermissionResult: RRabacModel {
 
     // MARK: Migration
     public func prepare(on database: Database) -> EventLoopFuture<Void> {
-        // database.createOrGetEnumType()
-        database.schema(RRabacHitsoryItem.schema)
-            .id() // primary key
-            // .field(CodingKeys.action.fieldKey, .e, .required)
-            .field(CodingKeys.error.fieldKey, .json)
-            .field(CodingKeys.notes.fieldKey, .string)
-            .ignoreExisting().create()
+        return database.createOrGetCaseIterableEnumType(anEnumType: RRabacCRUDAction.self).flatMap { crudAction in
+            
+            // Model schema:
+            return database.schema(Self.schema)
+                .id() // primary key
+                .field(CodingKeys.action.fieldKey, crudAction ,.required)
+                .field(CodingKeys.error.fieldKey, .json)
+                .field(CodingKeys.notes.fieldKey, .string)
+                .field(CodingKeys.requesterId.fieldKey, .string)
+                .field(CodingKeys.granterId.fieldKey, .string)
+                .field(CodingKeys.requestedResourceId.fieldKey, .string)
+                .ignoreExisting().create()
+        }
     }
     
     public func revert(on database: Database) -> EventLoopFuture<Void> {
-        database.schema(Self.schema).delete()
+        return  database.schema(Self.schema).delete().flatMap {
+            return database.enum(RRabacCRUDAction.name).delete()
+        }
     }
 }

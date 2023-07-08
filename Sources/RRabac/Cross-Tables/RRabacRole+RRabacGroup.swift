@@ -1,8 +1,8 @@
 //
-//  File.swift
-//  
+//  RRabacRole+RRabacGroup.swift
+//  RRabac
 //
-//  Created by Ido on 01/06/2023.
+//  Created by Ido on 04/06/2023.
 //
 
 import Foundation
@@ -11,13 +11,15 @@ import Fluent
 import MNUtils
 //import DSLogger
 
-final class RRabacUserGroup: RRabacModel {
-    static let schema = "user_groups"
 
+final class RRabacRoleGroup: RRabacModel {
+    
+    static let schema = "rrabac_role_groups"
+    
     // MARK: CodingKeys
     enum CodingKeys : String, CodingKey, CaseIterable {
         case id = "id"
-        case user = "user_id"
+        case role = "role_id"
         case group = "group_id"
         
         var fieldKey : FieldKey {
@@ -29,11 +31,11 @@ final class RRabacUserGroup: RRabacModel {
     @ID(key: .id)
     var id: UUID?
     var mnUID: MNUID? {
-        return RRabacUserGroupUID(uid: id!, typeStr: MNUIDType.userGroup)
+        return RRabacRoleGroupUID(uid: id!, typeStr: MNUIDType.roleGroup)
     }
     
-    @Parent(key: CodingKeys.user.fieldKey)
-    var user: RRabacUser
+    @Parent(key: CodingKeys.role.fieldKey)
+    var role: RRabacRole
 
     @Parent(key: CodingKeys.group.fieldKey)
     var group: RRabacGroup
@@ -42,16 +44,16 @@ final class RRabacUserGroup: RRabacModel {
     // Vapor migration requires empty init
     init() {}
 
-    init(userID: UUID, groupID: UUID) {
-        self.$user.id = userID
-        self.$group.id = groupID
+    init(roleID: UUID, groupId: UUID) {
+        self.$role.id = roleID
+        self.$group.id = groupId
     }
     
     // MARK: Migration
     public func prepare(on database: Database) -> EventLoopFuture<Void> {
         return database.schema(Self.schema)
             .id() // primary key
-            .field(CodingKeys.user.fieldKey,  .uuid,  .required)
+            .field(CodingKeys.role.fieldKey,  .uuid,  .required)
             .field(CodingKeys.group.fieldKey, .uuid,  .required)
             .ignoreExisting().create()
     }

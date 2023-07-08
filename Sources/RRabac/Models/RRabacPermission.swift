@@ -17,7 +17,7 @@ final public class RRabacPermission: RRabacModel {
     // MARK: CodingKeys
     enum CodingKeys : String, CodingKey, CaseIterable {
         case id = "id"
-        case name = "name"
+        case title = "title"
         case desc = "desc"
         
         var fieldKey : FieldKey {
@@ -35,26 +35,25 @@ final public class RRabacPermission: RRabacModel {
         return RRabacPermissionUID(uid: uid)
     }
     
-    @Field(key: CodingKeys.name.fieldKey)
-    public var name: String // name of the permission
+    @Field(key: CodingKeys.title.fieldKey)
+    public var title: String // title of the permission
     
     @Field(key: CodingKeys.desc.fieldKey)
-    public var desc: String // name of the permission
+    public var desc: String // description of the permission
 
     // The roles owning the permission?
-    @Siblings(through: RRabacRolePermission.self, from: \.$permission, to: \.$role)
-    public var roles: [RRabacRole]
+//    @Siblings(through: RRabacRolePermission.self, from: \.$permission, to: \.$role)
+//    public var roles: [RRabacRole]
     
     //  MARK: Lifecycle
     // Vapor migration requires empty init
     required public init() {
-        self.id = UUID()
-        self.name = "<?>"
+        self.title = self.migrationName
     }
 
-    fileprivate init(id:UUID, name: String, desc: String = "") {
+    fileprivate init(id:UUID, title: String, desc: String = "") {
         self.id = id
-        self.name = name
+        self.title = title
         self.desc = desc
     }
 
@@ -64,14 +63,15 @@ final public class RRabacPermission: RRabacModel {
         // https://stemmetje.com/2020/05/defining-a-varchar-column-in-vapor-4/
         // We can use : .custom("VARCHAR(100)")
         // In SQLite it will be automatically translated to a TEXT column. (no error on migration)
-        database.schema(RRabacHitsoryItem.schema)
+        return database.schema(Self.schema)
             .id() // primary key
-            .field(CodingKeys.name.fieldKey, .string, .required)
+            .field(CodingKeys.title.fieldKey, .string, .required)
             .field(CodingKeys.desc.fieldKey, .string)
+            .unique(on: CodingKeys.title.fieldKey)
             .ignoreExisting().create()
     }
     
     public func revert(on database: Database) -> EventLoopFuture<Void> {
-        database.schema(Self.schema).delete()
+        return database.schema(Self.schema).delete()
     }
 }
