@@ -12,10 +12,13 @@ import MNUtils
 import DSLogger
 
 public protocol Userable : AnyObject {
+    static var userMNUIDStr : String { get }
+    
     var id: UUID? { get }
     var username: String? { get }
     var useremail: String? { get }
     var domain: String? { get }
+
 }
 
 public enum UserableCodingKeys : String, CodingKey, CaseIterable {
@@ -24,16 +27,35 @@ public enum UserableCodingKeys : String, CodingKey, CaseIterable {
     case useremail = "useremail"
     case domain = "domain"
     
+    case addedPermissions = "added_permissions"
+    case revokedPermissions = "revoked_permissions"
+    
     var fieldKey : FieldKey {
         return .string(self.rawValue)
     }
 }
 
 final public class RRabacUser: RRabacModel, Userable {
-    public static let schema = "rrabac_users"
+    public static let userMNUIDStr: String = MNUIDType.user
+    public static let schema : String = "rrabac_users"
     
     // MARK: CodingKeys
-    typealias CodingKeys = UserableCodingKeys
+    enum CodingKeys : String, CodingKey, CaseIterable {
+        case username = "username"
+        case useremail = "useremail"
+        case domain = "domain"
+        
+        case roles = "rrabac_role_ids"
+        case groups = "rrabac_group_ids"
+        
+        // Manual granularity on a per-user basis
+        case addedPermissions = "rrabac_added_permission_ids"
+        case revokedPermissions = "rrabac_revoked_permission_ids"
+        
+        var fieldKey : FieldKey {
+            return .string(self.rawValue)
+        }
+    }
     
     // MARK: Properties
     @ID(key: .id)
@@ -53,16 +75,31 @@ final public class RRabacUser: RRabacModel, Userable {
     
     @OptionalField(key: CodingKeys.domain.fieldKey)
     public var domain: String?
-    
-//    @Siblings(through: RRabacUserRole.self, from: \.$user, to: \.$role)
-//    public var roles: [RRabacRole]
-//
-//    @Siblings(through: RRabacUserGroup.self, from: \.$user, to: \.$group)
-//    public var groups: [RRabacGroup]
 
+    
+    @Siblings(through: RRabacUserGroup.self, from: \.$user, to: \.$group)
+    /// Role groups the user belongs to
+    public var groups: [RRabacGroup]
+    
+    
+    /// Roles applying to the user: all their permissions are bestowed upon the user
+    @Siblings(through: RRabacUserRole.self, from: \.$user, to: \.$role)
+    public var roles: [RRabacRole]
+    
+    /// Permissions added for the user in addition to the permissions given by the user roles.
+    @OptionalField(key: CodingKeys.addedPermissions.fieldKey)
+    public var addedPermissions: [RRabacPermission]
+    
+    /// Permissions revoked for the user overriding all roles and groups the user is associated with
+    @OptionalField(key: CodingKeys.revokedPermissions.fieldKey)
+    public var revokedPermissions: [RRabacPermission]
+    
     //  MARK: Lifecycle
     // Vapor migration requires empty init
-    public init() {}
+    public init() {
+        self.addedPermissions = []
+        self.revokedPermissions = []
+    }
 
     public init(id: UUID? = nil, username: String?, useremail: String?, domain:String) throws {
 
@@ -75,7 +112,8 @@ final public class RRabacUser: RRabacModel, Userable {
         self.username = username
         self.useremail = useremail
         self.domain = domain
-        
+        self.addedPermissions = []
+        self.revokedPermissions = []
     }
     
     // MARK: Migration
@@ -85,6 +123,13 @@ final public class RRabacUser: RRabacModel, Userable {
             .field(CodingKeys.username.fieldKey, .string)
             .field(CodingKeys.useremail.fieldKey, .string)
             .field(CodingKeys.domain.fieldKey, .string)
+        
+            .field(CodingKeys.addedPermissions.fieldKey, .array(of:.uuid))
+            .field(CodingKeys.revokedPermissions.fieldKey, .array(of:.uuid))
+        
+            // Pivots:
+            .field(CodingKeys.groups.fieldKey, .array(of:.uuid))
+        
             .unique(on: CodingKeys.username.fieldKey, CodingKeys.useremail.fieldKey, CodingKeys.domain.fieldKey)
             .ignoreExisting().create()
     }

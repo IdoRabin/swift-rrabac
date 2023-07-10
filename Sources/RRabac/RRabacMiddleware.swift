@@ -75,6 +75,7 @@ final public class RRabacMiddleware: Middleware {
         
         dlog?.verbose("Init w/ errorPages: \(config.errorWebpagePaths.descriptionsJoined)")
     }
+    
     deinit {
         dlog?.info("deinit")
     }
@@ -124,37 +125,40 @@ public extension RRabacMiddleware /* + Fluent */ {
             RRabacHitsoryItem(),
             RRabacPermission(),
             RRabacRole(),
+            RRabacUser(),
+            RRabacGroup(), // Role group
             RRabacPermissionResult(),
-//
-//            RRabacUser(),
-            
-            // Cross-table
-//            RRabacRoleGroup(),
-//            RRabacRolePermission(),
-//            RRabacUserRole(),
-//            RRabacUserGroup(),
+
+            // Pivots (relations)
+            RRabacRoleGroup(),
+            RRabacRolePermission(),
+            // -- RRabacUserRole(),
+            RRabacUserGroup(),
         ]
         
         return result
     }
 }
 
-// MARK: LifecycleBootableHandler
-extension RRabacMiddleware : LifecycleBootableHandler {
+// MARK: MNBootStateObserver
+extension RRabacMiddleware : MNBootStateObserver {
+    public typealias ObjectType = MNRoutes
     
-    public func willBoot(_ application: Application) throws {
-        dlog?.info("willBoot")
+    public func willBoot<App>(object: MNVaporUtils.MNRoutes, inApp: App?) where App : AnyObject {
+        dlog?.info("willBoot MNRoutes in app:\(inApp.descOrNil)")
     }
     
-    public func didBoot(_ application: Application) throws {
-        dlog?.info("didBoot")
+    public func didBoot<App>(object: MNVaporUtils.MNRoutes, inApp: App?) where App : AnyObject {
+        dlog?.info("didBoot MNRoutes in app:\(inApp.descOrNil)")
     }
     
-    public func shutdown(_ application: Application) {
-        dlog?.info("shutdown")
+    public func willShutdown<App>(object: MNVaporUtils.MNRoutes, inApp: App?) where App : AnyObject {
+        dlog?.info("willShutdown MNRoutes in app:\(inApp.descOrNil)")
     }
     
-    public func boot(_ app: Vapor.Application) throws {
-        dlog?.info("boot")
+    public func didShutdown<App>(object: MNVaporUtils.MNRoutes, inApp: App?) where App : AnyObject {
+        dlog?.info("didShutdown MNRoutes in app:\(inApp.descOrNil)")
     }
+    
+    
 }

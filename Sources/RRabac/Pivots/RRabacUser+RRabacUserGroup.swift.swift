@@ -1,25 +1,24 @@
 //
-//  RRabacRole+RRabacPermission.swift
+//  RRabacUserGroup.swift
 //  
 //
 //  Created by Ido on 01/06/2023.
 //
+
 import Foundation
 import Vapor
 import Fluent
 import MNUtils
 //import DSLogger
 
-
-final class RRabacRolePermission: RRabacModel {
-    
-    static let schema = "role_permissions"
+final class RRabacUserGroup: RRabacModel {
+    static let schema = "user_groups"
 
     // MARK: CodingKeys
     enum CodingKeys : String, CodingKey, CaseIterable {
         case id = "id"
-        case role = "role_id"
-        case permission = "permission_id"
+        case user = "user_id"
+        case group = "group_id"
         
         var fieldKey : FieldKey {
             return .string(self.rawValue)
@@ -30,30 +29,32 @@ final class RRabacRolePermission: RRabacModel {
     @ID(key: .id)
     var id: UUID?
     var mnUID: MNUID? {
-        return RRabacRolePermissionUID(uid: id!, typeStr: MNUIDType.rolePermission)
+        return RRabacUserGroupUID(uid: id!, typeStr: MNUIDType.userGroup)
     }
     
-    @Parent(key: CodingKeys.role.fieldKey)
-    var role: RRabacRole
+    // MARK: Fluent Pivot table (two @Parents are required)
+    @Parent(key: CodingKeys.user.fieldKey)
+    var user: RRabacUser
 
-    @Parent(key: CodingKeys.permission.fieldKey)
-    var permission: RRabacPermission
+    @Parent(key: CodingKeys.group.fieldKey)
+    var group: RRabacGroup
 
     //  MARK: Lifecycle
     // Vapor migration requires empty init
     init() {}
 
-    init(roleID: UUID, permissionID: UUID) {
-        self.$role.id = roleID
-        self.$permission.id = permissionID
+    init(userID: UUID, groupID: UUID) {
+        self.$user.id = userID
+        self.$group.id = groupID
     }
     
     // MARK: Migration
     public func prepare(on database: Database) -> EventLoopFuture<Void> {
         return database.schema(Self.schema)
             .id() // primary key
-            .field(CodingKeys.role.fieldKey,       .uuid,  .required)
-            .field(CodingKeys.permission.fieldKey, .uuid,  .required)
+            .field(CodingKeys.user.fieldKey,  .uuid,  .required)
+            .field(CodingKeys.group.fieldKey, .uuid,  .required)
+            .unique(on: CodingKeys.user.fieldKey, CodingKeys.group.fieldKey)
             .ignoreExisting().create()
     }
     

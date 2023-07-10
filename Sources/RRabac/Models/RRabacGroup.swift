@@ -51,9 +51,9 @@ final public class RRabacGroup: RRabacModel {
 //    @Siblings(through: RRabacUserGroup.self, from: \.$group, to: \.$user)
 //    public var users: [RRabacUser]
 //
-//    // The roles assigned to this group
-//    @Siblings(through: RRabacRoleGroup.self, from: \.$group, to: \.$role)
-//    public var roles: [RRabacRole]
+    // The roles assigned to this group
+    @Siblings(through: RRabacRoleGroup.self, from: \.$group, to: \.$role)
+    public var roles: [RRabacRole]
     
     //  MARK: Lifecycle
     // Vapor migration requires empty init
@@ -65,7 +65,7 @@ final public class RRabacGroup: RRabacModel {
         self.title = title
         self.domain = domain
         self.desc = desc
-        // self.roles = roles ?? []
+        self.roles = roles ?? []
     }
     
     // MARK: Migration
@@ -75,8 +75,10 @@ final public class RRabacGroup: RRabacModel {
             .field(CodingKeys.title.fieldKey, .string, .required)
             .field(CodingKeys.desc.fieldKey, .string)
             .field(CodingKeys.domain.fieldKey, .string)
-            //.field(CodingKeys.roles.fieldKey, .string)
-            //.field(CodingKeys.users.fieldKey, .string)
+        
+            // Pivots:
+            .field(CodingKeys.roles.fieldKey, .array(of: .uuid))
+            .field(CodingKeys.users.fieldKey, .string)
             .unique(on: CodingKeys.title.fieldKey)
             .ignoreExisting().create()
     }

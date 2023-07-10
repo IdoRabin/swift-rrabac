@@ -22,9 +22,9 @@ final public class RRabacPermissionResult: RRabacModel {
         case error = "error"
         case notes = "notes"
         case requesterId = "requester_id"
+        case requestedAction = "requested_action"
         case granterId = "granter_id"
-        case requestedResourceId = "requested_resource_id"
-        case action = "action"
+        case requestedResources = "requested_resources"
         
         var fieldKey : FieldKey {
             return .string(self.rawValue)
@@ -47,34 +47,34 @@ final public class RRabacPermissionResult: RRabacModel {
     @Field(key: CodingKeys.granterId.fieldKey)
     public var granterId: MNUID
     
-    @Field(key: CodingKeys.requestedResourceId.fieldKey)
-    public var requestedResourceId: MNUID
+    @Field(key: CodingKeys.requestedResources.fieldKey)
+    public var requestedResources: RRabacPermissionResource
     
-    @Enum(key: CodingKeys.action.fieldKey)
-    public var action: RRabacCRUDAction
+    @Enum(key: CodingKeys.requestedAction.fieldKey)
+    public var requestedAction: RRabacCRUDAction
     
     @OptionalField(key: CodingKeys.error.fieldKey)
     public var error: MNError?
     
     @OptionalField(key: CodingKeys.notes.fieldKey)
-    public var notes: String? // name of the permission
+    public var notes: String? // notes regarding the permission
     
     //  MARK: Lifecycle
     // Vapor migration requires empty init
     required public init() {
-        self.id = UUID()
-        self.action = .read
+        self.id = UUIDv5.empty
         self.error = nil
         self.notes = nil
         self.requesterId = nil
-        
-        self.granterId = MNUID.init(uid: UUID.empty, typeStr: MNUIDType.user)
-        self.requestedResourceId = MNUID(uid: UUID.empty, typeStr: MNUIDType.user)
+        self.requestedAction = .read
+        self.requesterId = UserUID(uid: UUIDv5.empty)// MNUID.init(uid: UUIDv5.empty, typeStr: MNUIDType.user)
+        self.granterId = UserUID(uid: UUIDv5.empty)// MNUID.init(uid: UUIDv5.empty, typeStr: MNUIDType.user)
+        self.requestedResources = RRabacPermissionResource.empty
     }
 
     fileprivate init(id:UUID, action: RRabacCRUDAction, error: MNError? = nil, notes:String? = nil) {
         self.id = id
-        self.action = action
+        self.requestedAction = action
         self.error = error
         self.notes = notes
     }
@@ -82,22 +82,22 @@ final public class RRabacPermissionResult: RRabacModel {
     // MARK: Migration
     public func prepare(on database: Database) -> EventLoopFuture<Void> {
         return database.createOrGetCaseIterableEnumType(anEnumType: RRabacCRUDAction.self).flatMap { crudAction in
-            
+            // return database.eventLoop.makeSucceededVoidFuture() //  Debugging
             // Model schema:
             return database.schema(Self.schema)
-                .id() // primary key
-                .field(CodingKeys.action.fieldKey, crudAction ,.required)
-                .field(CodingKeys.error.fieldKey, .json)
-                .field(CodingKeys.notes.fieldKey, .string)
+                .id()  // primary key
                 .field(CodingKeys.requesterId.fieldKey, .string)
+                .field(CodingKeys.requestedAction.fieldKey, crudAction ,.required)
+                .field(CodingKeys.requestedResources.fieldKey, .json)
                 .field(CodingKeys.granterId.fieldKey, .string)
-                .field(CodingKeys.requestedResourceId.fieldKey, .string)
+                .field(CodingKeys.error.fieldKey, .json)
+                .field(CodingKeys.notes.fieldKey, .array(of: .string))
                 .ignoreExisting().create()
         }
     }
     
     public func revert(on database: Database) -> EventLoopFuture<Void> {
-        return  database.schema(Self.schema).delete().flatMap {
+        return database.schema(Self.schema).delete().flatMap {
             return database.enum(RRabacCRUDAction.name).delete()
         }
     }

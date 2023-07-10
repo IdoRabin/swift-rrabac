@@ -12,7 +12,7 @@ public protocol RRabacPermissionGiver {
     
     func isAllowed(for selfUser:RRabacUser?,
                    to action:any Codable,
-                   on subject:RRabacPermissionSubject?,
+                   on subject:RRabacPermissionResource?,
                    during req:Request?,
                    params:[String:Any]?)->RRabacPermission
 }

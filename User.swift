@@ -181,7 +181,7 @@ final class User : JSONSerializable {
 //        try NewUserComps.validate(json: newComps.serializeToJsonString()!)
 //
 //        // Apply
-//        self.id = UUID()
+//        self.id = UUIDv5()
 //        self.username = newComps.newUsername
 //        self.userDomain = newComps.newUserDomain
 //        self.usernameType = newComps.newUsernameType
@@ -244,7 +244,7 @@ final class User : JSONSerializable {
     // Vapor Model requires implementing an empty init()
     init() {
         // dlog?.info("new user empty init")
-        id = UUID()
+        id = UUIDv5()
     }
     
     // MARK: Codable

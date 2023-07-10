@@ -1,25 +1,25 @@
 //
-//  RRabacUser+RRabacRole.swift
+//  RRabacRole+RRabacPermission.swift
 //  
 //
 //  Created by Ido on 01/06/2023.
 //
-
 import Foundation
 import Vapor
 import Fluent
 import MNUtils
 //import DSLogger
 
-final class RRabacUserRole: RRabacModel {
+
+final class RRabacRolePermission: RRabacModel {
     
-    static let schema = "user_roles"
+    static let schema = "role_permissions"
 
     // MARK: CodingKeys
     enum CodingKeys : String, CodingKey, CaseIterable {
         case id = "id"
-        case user = "user_id"
         case role = "role_id"
+        case permission = "permission_id"
         
         var fieldKey : FieldKey {
             return .string(self.rawValue)
@@ -30,30 +30,32 @@ final class RRabacUserRole: RRabacModel {
     @ID(key: .id)
     var id: UUID?
     var mnUID: MNUID? {
-        return RRabacUserRoleUID(uid: id!, typeStr: MNUIDType.userRole)
+        return RRabacRolePermissionUID(uid: id!, typeStr: MNUIDType.rolePermission)
     }
     
-    @Parent(key: CodingKeys.user.fieldKey)
-    var user: RRabacUser
-
+    // MARK: Fluent Pivot table (two @Parents are required)
     @Parent(key: CodingKeys.role.fieldKey)
     var role: RRabacRole
-    
+
+    @Parent(key: CodingKeys.permission.fieldKey)
+    var permission: RRabacPermission
+
     //  MARK: Lifecycle
     // Vapor migration requires empty init
     init() {}
 
-    init(userID: UUID, roleID: UUID) {
-        self.$user.id = userID
+    init(roleID: UUID, permissionID: UUID) {
         self.$role.id = roleID
+        self.$permission.id = permissionID
     }
     
     // MARK: Migration
     public func prepare(on database: Database) -> EventLoopFuture<Void> {
         return database.schema(Self.schema)
             .id() // primary key
-            .field(CodingKeys.user.fieldKey, .uuid,  .required)
-            .field(CodingKeys.role.fieldKey, .uuid,  .required)
+            .field(CodingKeys.role.fieldKey,       .uuid,  .required)
+            .field(CodingKeys.permission.fieldKey, .uuid,  .required)
+            .unique(on: CodingKeys.role.fieldKey, CodingKeys.permission.fieldKey)
             .ignoreExisting().create()
     }
     

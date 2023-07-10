@@ -55,7 +55,7 @@ final public class RRabacHitsoryItem : RRabacModel {
     
     // The item that was CRUDed:
     @Field(key: CodingKeys.permissionSubject.fieldKey)
-    var permissionSubject : RRabacPermissionSubject?
+    var permissionSubject : RRabacPermissionResource?
     
     //  MARK: Lifecycle
     // Vapor migration requires empty init
