@@ -6,30 +6,24 @@
 //
 
 import Foundation
+import FluentKit
+import Fluent
+import MNUtils
+import MNVaporUtils
 
-public extension RRabacMiddleware /* */ {
-    func isMasterAccountExists() async -> Bool {
+public struct UseLoginInfo {
+    
+}
+
+public extension RRabacMiddleware /* Prefill */ {
+    
+    func isMasterAccountExists(named:String, db:Fluent.Database) async -> Bool {
         var result = false
         return result
     }
     
-    func isMasterGroupExists() async -> Bool {
+    func isMasterGroupExists(named:String, db:Database) async -> Bool {
         var result = false
         return result
-    }
-    
-    @discardableResult
-    func prefillDataIfNeeded() async -> Bool {
-        guard await self.isMasterGroupExists() == false {
-            // Master group already exists
-            return false
-        }
-        
-        guard await self.isMasterAccountExists() == false {
-            // Master account already exists
-            return false
-        }
-        
-        
     }
 }

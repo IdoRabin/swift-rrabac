@@ -11,38 +11,15 @@ import Fluent
 import MNUtils
 import DSLogger
 
-public protocol Userable : AnyObject {
-    static var userMNUIDStr : String { get }
-    
-    var id: UUID? { get }
-    var username: String? { get }
-    var useremail: String? { get }
-    var domain: String? { get }
-
-}
-
-public enum UserableCodingKeys : String, CodingKey, CaseIterable {
-    case id = "id"
-    case username = "username"
-    case useremail = "useremail"
-    case domain = "domain"
-    
-    case addedPermissions = "added_permissions"
-    case revokedPermissions = "revoked_permissions"
-    
-    var fieldKey : FieldKey {
-        return .string(self.rawValue)
-    }
-}
-
-final public class RRabacUser: RRabacModel, Userable {
-    public static let userMNUIDStr: String = MNUIDType.user
-    public static let schema : String = "rrabac_users"
+final public class RRabacUser: RRabacModel {
+    public static var mnuidStr : String { "RRBC_USR" }
+    public static var schema : String { "rrabac_users" }
     
     // MARK: CodingKeys
     enum CodingKeys : String, CodingKey, CaseIterable {
-        case username = "username"
-        case useremail = "useremail"
+        case id = "id"
+        case mnUserId = "mn_user_id"
+        case mnUserInfo = "mn_user_info_id"
         case domain = "domain"
         
         case roles = "rrabac_role_ids"
@@ -60,38 +37,26 @@ final public class RRabacUser: RRabacModel, Userable {
     // MARK: Properties
     @ID(key: .id)
     public var id: UUID?
-    public var mnUID : MNUID? {
-        guard let uid = self.id else {
-            return nil
-        }
-        return RRabacUserUID(uid: uid)
-    }
     
-    @OptionalField(key: CodingKeys.username.fieldKey)
-    public var username: String?
+    @OptionalField(key: CodingKeys.mnUserId.fieldKey)
+    public var sysUserId: UUID?
     
-    @OptionalField(key: CodingKeys.useremail.fieldKey)
-    public var useremail: String?
+    @OptionalField(key: CodingKeys.mnUserInfo.fieldKey)
+    public var sysUserInfo: UUID?
     
     @OptionalField(key: CodingKeys.domain.fieldKey)
     public var domain: String?
-
-    
-    @Siblings(through: RRabacUserGroup.self, from: \.$user, to: \.$group)
-    /// Role groups the user belongs to
-    public var groups: [RRabacGroup]
-    
     
     /// Roles applying to the user: all their permissions are bestowed upon the user
     @Siblings(through: RRabacUserRole.self, from: \.$user, to: \.$role)
     public var roles: [RRabacRole]
     
     /// Permissions added for the user in addition to the permissions given by the user roles.
-    @OptionalField(key: CodingKeys.addedPermissions.fieldKey)
+    @Field(key: CodingKeys.addedPermissions.fieldKey)
     public var addedPermissions: [RRabacPermission]
     
     /// Permissions revoked for the user overriding all roles and groups the user is associated with
-    @OptionalField(key: CodingKeys.revokedPermissions.fieldKey)
+    @Field(key: CodingKeys.revokedPermissions.fieldKey)
     public var revokedPermissions: [RRabacPermission]
     
     //  MARK: Lifecycle
@@ -101,16 +66,8 @@ final public class RRabacUser: RRabacModel, Userable {
         self.revokedPermissions = []
     }
 
-    public init(id: UUID? = nil, username: String?, useremail: String?, domain:String) throws {
-
-        guard (username?.count ?? 0) > 0 &&
-              (useremail?.count ?? 0) > 0 else {
-            throw MNError(code:.db_failed_init, reason: "RRabacUser failed init because both username and useremail are nil or empty")
-        }
-        
+    public init(id: UUID? = nil, domain:String?) throws {
         self.id = id
-        self.username = username
-        self.useremail = useremail
         self.domain = domain
         self.addedPermissions = []
         self.revokedPermissions = []
@@ -120,8 +77,6 @@ final public class RRabacUser: RRabacModel, Userable {
     public func prepare(on database: Database) -> EventLoopFuture<Void> {
         return database.schema(Self.schema)
             .id() // primary key
-            .field(CodingKeys.username.fieldKey, .string)
-            .field(CodingKeys.useremail.fieldKey, .string)
             .field(CodingKeys.domain.fieldKey, .string)
         
             .field(CodingKeys.addedPermissions.fieldKey, .array(of:.uuid))
@@ -129,8 +84,8 @@ final public class RRabacUser: RRabacModel, Userable {
         
             // Pivots:
             .field(CodingKeys.groups.fieldKey, .array(of:.uuid))
-        
-            .unique(on: CodingKeys.username.fieldKey, CodingKeys.useremail.fieldKey, CodingKeys.domain.fieldKey)
+            .field(CodingKeys.roles.fieldKey, .array(of:.uuid))
+            .unique(on:.id, CodingKeys.domain.fieldKey)
             .ignoreExisting().create()
     }
     

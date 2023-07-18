@@ -12,8 +12,8 @@ import MNUtils
 
 
 final class RRabacRolePermission: RRabacModel {
-    
-    static let schema = "role_permissions"
+    public static let mnuidStr = "RRBC_ROL×PRM"
+    static let schema = "rrabac_role_permissions"
 
     // MARK: CodingKeys
     enum CodingKeys : String, CodingKey, CaseIterable {
@@ -29,9 +29,6 @@ final class RRabacRolePermission: RRabacModel {
     // MARK: Properties
     @ID(key: .id)
     var id: UUID?
-    var mnUID: MNUID? {
-        return RRabacRolePermissionUID(uid: id!, typeStr: MNUIDType.rolePermission)
-    }
     
     // MARK: Fluent Pivot table (two @Parents are required)
     @Parent(key: CodingKeys.role.fieldKey)

@@ -14,6 +14,7 @@ import DSLogger
 
 // public typealias RRabacPermissionResult = MNPermission<RRabacPermissionID, MNError>
 final public class RRabacPermissionResult: RRabacModel {
+    public static let mnuidStr = "RRBC_PRM_RES"
     public static let schema = "rrabac_permission_results"
 
     // MARK: CodingKeys
@@ -34,12 +35,6 @@ final public class RRabacPermissionResult: RRabacModel {
     // MARK: Properties
     @ID(key: .id)
     public var id: UUID?
-    public var mnUID : MNUID? {
-        guard let uid = self.id else {
-            return nil
-        }
-        return RRabacPermissionUID(uid: uid)
-    }
     
     @OptionalField(key: CodingKeys.requesterId.fieldKey)
     public var requesterId: MNUID?
@@ -67,8 +62,7 @@ final public class RRabacPermissionResult: RRabacModel {
         self.notes = nil
         self.requesterId = nil
         self.requestedAction = .read
-        self.requesterId = UserUID(uid: UUIDv5.empty)// MNUID.init(uid: UUIDv5.empty, typeStr: MNUIDType.user)
-        self.granterId = UserUID(uid: UUIDv5.empty)// MNUID.init(uid: UUIDv5.empty, typeStr: MNUIDType.user)
+        self.granterId = MNUID()
         self.requestedResources = RRabacPermissionResource.empty
     }
 
@@ -87,7 +81,7 @@ final public class RRabacPermissionResult: RRabacModel {
             return database.schema(Self.schema)
                 .id()  // primary key
                 .field(CodingKeys.requesterId.fieldKey, .string)
-                .field(CodingKeys.requestedAction.fieldKey, crudAction ,.required)
+                .field(CodingKeys.requestedAction.fieldKey, crudAction)
                 .field(CodingKeys.requestedResources.fieldKey, .json)
                 .field(CodingKeys.granterId.fieldKey, .string)
                 .field(CodingKeys.error.fieldKey, .json)
@@ -98,7 +92,7 @@ final public class RRabacPermissionResult: RRabacModel {
     
     public func revert(on database: Database) -> EventLoopFuture<Void> {
         return database.schema(Self.schema).delete().flatMap {
-            return database.enum(RRabacCRUDAction.name).delete()
+            return database.enum(RRabacCRUDAction.dbName).delete()
         }
     }
 }

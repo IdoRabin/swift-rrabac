@@ -6,14 +6,11 @@
 //
 
 import Foundation
+import MNUtils
 
-public enum RRabacCRUDAction : String, Codable, CaseIterable {
+public enum RRabacCRUDAction : String, MNDBEnum {
     case create = "rrbc_create"
     case read   = "rrbc_read"
     case update = "rrbc_update"
     case delete = "rrbc_delete"
-    
-    static var name : String {
-        return "\(Self.self)"
-    }
 }

@@ -42,6 +42,7 @@ public extension Sequence where Element : RRabacModel {
 public typealias IsVaporRequestResult = MNResult<Bool /*, MNError */>
 public typealias IsVaporRequestSomeTestBlock = (_ request: Vapor.Request)->IsVaporRequestResult
 
+// TODO: Seperate the Login info into another database. (not the app / cloud / content / projects DB)
 final public class RRabacMiddleware: Middleware {
     
     public typealias RResponse = NIOCore.EventLoopFuture<Vapor.Response>
@@ -119,21 +120,18 @@ final public class RRabacMiddleware: Middleware {
 }
 
 public extension RRabacMiddleware /* + Fluent */ {
-    func allMigrations()->[Migration] {
+    func allRRabacMigrations()->[Migration] {
         let result : [Migration] = [
             // RRabac classes / models:
+            RRabacPermissionResult(),
             RRabacHitsoryItem(),
             RRabacPermission(),
             RRabacRole(),
             RRabacUser(),
-            RRabacGroup(), // Role group
-            RRabacPermissionResult(),
 
             // Pivots (relations)
-            RRabacRoleGroup(),
             RRabacRolePermission(),
-            // -- RRabacUserRole(),
-            RRabacUserGroup(),
+            RRabacUserRole(),
         ]
         
         return result

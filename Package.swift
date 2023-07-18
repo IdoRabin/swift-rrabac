@@ -39,7 +39,9 @@ let package = Package(
             ],
             swiftSettings: [
                 .define("VAPOR"), // Vapor framework, to distinguish in classes that are also used in iOS / macOS.
+                .define("FLUENT"),
                 .define("NIO"),
+                .define("RRABAC"),
             ]
         ),
         .testTarget(

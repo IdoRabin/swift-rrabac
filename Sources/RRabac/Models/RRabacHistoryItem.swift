@@ -14,6 +14,7 @@ import DSLogger
 // , Authenticatable,
 
 final public class RRabacHitsoryItem : RRabacModel {
+    public static let mnuidStr = "RRBC_HST"
     public static var schema: String = "rrabac_history"
     
     // MARK: CodingKeys
@@ -32,13 +33,6 @@ final public class RRabacHitsoryItem : RRabacModel {
     // MARK: Properties
     @ID(key: .id)
     public var id: UUID?
-    
-    public var mnUID : MNUID? {
-        guard let uid = self.id else {
-            return nil
-        }
-        return RRabacPermissionUID(uid: uid)
-    }
     
     // 
     @Field(key: CodingKeys.permissionResult.fieldKey)

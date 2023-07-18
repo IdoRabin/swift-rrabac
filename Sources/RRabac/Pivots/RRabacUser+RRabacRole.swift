@@ -11,8 +11,9 @@ import Fluent
 import MNUtils
 //import DSLogger
 
-final public class RRabacUserRole: RRabacModel {
-    public static let schema = "user_roles"
+final public class RRabacUserRole : RRabacModel {
+    public static var mnuidStr : String { "RRBC_USR×ROL" }
+    public static var schema : String { "rrabac_user_roles" }
 
     // MARK: CodingKeys
     enum CodingKeys : String, CodingKey, CaseIterable {
@@ -28,9 +29,6 @@ final public class RRabacUserRole: RRabacModel {
     // MARK: Properties
     @ID(key: .id)
     public var id: UUID?
-    var mnUID: MNUID? {
-        return RRabacUserRoleUID(uid: id!, typeStr: MNUIDType.userRole)
-    }
     
     // MARK: Fluent Pivot table (two @Parents are required)
     @Parent(key: CodingKeys.user.fieldKey)
@@ -41,11 +39,11 @@ final public class RRabacUserRole: RRabacModel {
 
     //  MARK: Lifecycle
     // Vapor migration requires empty init
-    init() {}
+    public init() {}
 
     init(userID: UUID, roleID: UUID) {
         self.$user.id = userID
-        self.$role.id = groupID
+        self.$role.id = roleID
     }
     
     // MARK: Migration

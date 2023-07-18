@@ -6,28 +6,44 @@
 //
 
 import Foundation
+import MNUtils
 
 public extension RRabacMiddleware /* */ {
     
-    func addNewUser(requestorID:MNUID, username:String? = nil, useremail:String? = nil, domain:String? = nil, pwd:String, userInfoId:MNUID? = nil) async -> MNResult<RRabacUser> {
-        var result : RRabacUser? = nil
+    // MARK: User CRUD
+    // Create User
+    // Read User
+    // Update User
+    // Delete User
+    
+    // MARK: Role CRUD
+    // Create Role
+    // Read Role
+    // Update Role
+    // Delete Role
+    
+    // MARK: Group CRUD
+    // Create Group
+    // Read Group
+    // Update Group
+    // Delete Group
+    
+    // MARK: Group / Role / Permissions assign to User
+    // Create Group
+    // Read Group
+    // Update Group
+    // Delete Group
+    
+    /*
+    func addNewUser(requestorID:MNUID, username:String? = nil, useremail:String? = nil, domain:String? = nil, pwd:String, userInfoId:MNUID? = nil) async throws -> MNResult<RRabacUser> {
         
-        if (username?.count ?? 0) > 0 {
-            
-        } else if (useremail?.count ?? 0) > 0 {
-        } else {
-            return .failure(code: .http_stt_created, reason: "Username or email are required")
-        }
-        
-        
-        = RRabacUser(username: username, useremail: useremail, domain: domain)
-        
+        var result : RRabacUser = try RRabacUser(username: username, useremail: useremail, domain: domain)
         
         return .success(result)
     }
     
     func assocGroupToUser(group:RRabacGroup, user:RRabacUser) {
         
-    }
+    }*/
 }
 

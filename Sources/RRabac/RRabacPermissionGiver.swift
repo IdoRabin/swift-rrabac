@@ -7,7 +7,7 @@
 
 import Foundation
 import Vapor
-
+/*
 public protocol RRabacPermissionGiver {
     
     func isAllowed(for selfUser:RRabacUser?,
@@ -16,3 +16,4 @@ public protocol RRabacPermissionGiver {
                    during req:Request?,
                    params:[String:Any]?)->RRabacPermission
 }
+*/

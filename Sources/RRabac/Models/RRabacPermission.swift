@@ -12,6 +12,7 @@ import MNUtils
 import DSLogger
 
 final public class RRabacPermission: RRabacModel {
+    public static let mnuidStr = "RRBC_PRM"
     public static let schema = "rrabac_permissions"
 
     // MARK: CodingKeys
@@ -28,12 +29,6 @@ final public class RRabacPermission: RRabacModel {
     // MARK: Properties
     @ID(key: .id)
     public var id: UUID?
-    public var mnUID : MNUID? {
-        guard let uid = self.id else {
-            return nil
-        }
-        return RRabacPermissionUID(uid: uid)
-    }
     
     @Field(key: CodingKeys.title.fieldKey)
     public var title: String // title of the permission

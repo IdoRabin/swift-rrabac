@@ -10,8 +10,9 @@ import Vapor
 import Fluent
 import MNUtils
 import DSLogger
-
-final public class RRabacGroup: RRabacModel {
+/*
+final public class xxRRabacGroup: RRabacModel {
+    public static var mnuidStr = "RRBC_GRP"
     public static let schema = "rrabac_group"
 
     // MARK: CodingKeys
@@ -31,12 +32,6 @@ final public class RRabacGroup: RRabacModel {
     // MARK: Properties
     @ID(key: .id)
     public var id: UUID?
-    public var mnUID : MNUID? {
-        guard let uid = self.id else {
-            return nil
-        }
-        return RRabacGroupUID(uid: uid)
-    }
 
     @Field(key: CodingKeys.title.fieldKey)
     public var title: String
@@ -87,3 +82,4 @@ final public class RRabacGroup: RRabacModel {
         return database.schema(Self.schema).delete()
     }
 }
+*/
