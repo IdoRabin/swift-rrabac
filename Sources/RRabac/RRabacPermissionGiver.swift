@@ -16,4 +16,5 @@ public protocol RRabacPermissionGiver {
                    during req:Request?,
                    params:[String:Any]?)->RRabacPermission
 }
+
 */
