@@ -12,7 +12,7 @@ import MNUtils
 
 
 final class RRabacRolePermission: RRabacModel {
-    
+    static var mnuidTypeStr: String = RRabacMNUIDType.rolePermission
     static let schema = "role_permissions"
 
     // MARK: CodingKeys
@@ -30,7 +30,7 @@ final class RRabacRolePermission: RRabacModel {
     @ID(key: .id)
     var id: UUID?
     var mnUID: MNUID? {
-        return RRabacRolePermissionUID(uid: id!, typeStr: MNUIDType.rolePermission)
+        return RRabacRolePermissionUID(uid: id!, typeStr: RRabacMNUIDType.rolePermission)
     }
     
     @Parent(key: CodingKeys.role.fieldKey)

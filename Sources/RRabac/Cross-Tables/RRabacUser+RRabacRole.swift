@@ -12,7 +12,7 @@ import MNUtils
 //import DSLogger
 
 final class RRabacUserRole: RRabacModel {
-    
+    public static var mnuidTypeStr: String = RRabacMNUIDType.userRole
     static let schema = "user_roles"
 
     // MARK: CodingKeys
@@ -30,7 +30,7 @@ final class RRabacUserRole: RRabacModel {
     @ID(key: .id)
     var id: UUID?
     var mnUID: MNUID? {
-        return RRabacUserRoleUID(uid: id!, typeStr: MNUIDType.userRole)
+        return RRabacUserRoleUID(uid: id!, typeStr: RRabacMNUIDType.userRole)
     }
     
     @Parent(key: CodingKeys.user.fieldKey)

@@ -14,6 +14,7 @@ import DSLogger
 // , Authenticatable,
 
 final public class RRabacHitsoryItem : RRabacModel {
+    public static var mnuidTypeStr: String = RRabacMNUIDType.historyItem
     public static var schema: String = "rrabac_history"
     
     // MARK: CodingKeys

@@ -30,6 +30,7 @@ public enum UserableCodingKeys : String, CodingKey, CaseIterable {
 }
 
 final public class RRabacUser: RRabacModel, Userable {
+    public static var mnuidTypeStr: String = RRabacMNUIDType.user
     public static let schema = "rrabac_users"
     
     // MARK: CodingKeys

@@ -14,6 +14,7 @@ import DSLogger
 
 // public typealias RRabacPermissionResult = MNPermission<RRabacPermissionID, MNError>
 final public class RRabacPermissionResult: RRabacModel {
+    public static var mnuidTypeStr: String = RRabacMNUIDType.historyItem
     public static let schema = "rrabac_permission_results"
 
     // MARK: CodingKeys
@@ -38,7 +39,7 @@ final public class RRabacPermissionResult: RRabacModel {
         guard let uid = self.id else {
             return nil
         }
-        return RRabacPermissionUID(uid: uid)
+        return RRabacHistoryItemUID(uid: uid)
     }
     
     @OptionalField(key: CodingKeys.requesterId.fieldKey)
@@ -68,8 +69,8 @@ final public class RRabacPermissionResult: RRabacModel {
         self.notes = nil
         self.requesterId = nil
         
-        self.granterId = MNUID.init(uid: UUID.empty, typeStr: MNUIDType.user)
-        self.requestedResourceId = MNUID(uid: UUID.empty, typeStr: MNUIDType.user)
+        self.granterId = MNUID.init(uid: UUID.empty, typeStr: RRabacMNUIDType.user)
+        self.requestedResourceId = MNUID(uid: UUID.empty, typeStr: RRabacMNUIDType.user)
     }
 
     fileprivate init(id:UUID, action: RRabacCRUDAction, error: MNError? = nil, notes:String? = nil) {

@@ -12,6 +12,7 @@ import MNUtils
 import DSLogger
 
 final public class RRabacPermission: RRabacModel {
+    public static var mnuidTypeStr: String = RRabacMNUIDType.permission
     public static let schema = "rrabac_permissions"
 
     // MARK: CodingKeys

@@ -12,6 +12,7 @@ import MNUtils
 import DSLogger
 
 final public class RRabacRole: RRabacModel {
+    public static var mnuidTypeStr: String = RRabacMNUIDType.role
     public  static let schema = "rrabac_roles"
     
     // MARK: CodingKeys

@@ -12,6 +12,7 @@ import MNUtils
 import DSLogger
 
 final public class RRabacGroup: RRabacModel {
+    public static var mnuidTypeStr: String = RRabacMNUIDType.group
     public static let schema = "rrabac_group"
 
     // MARK: CodingKeys

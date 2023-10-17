@@ -14,6 +14,7 @@ import MNUtils
 
 final class RRabacRoleGroup: RRabacModel {
     
+    public static var mnuidTypeStr: String = RRabacMNUIDType.roleGroup
     static let schema = "rrabac_role_groups"
     
     // MARK: CodingKeys
@@ -31,7 +32,7 @@ final class RRabacRoleGroup: RRabacModel {
     @ID(key: .id)
     var id: UUID?
     var mnUID: MNUID? {
-        return RRabacRoleGroupUID(uid: id!, typeStr: MNUIDType.roleGroup)
+        return RRabacRoleGroupUID(uid: id!, typeStr: RRabacMNUIDType.roleGroup)
     }
     
     @Parent(key: CodingKeys.role.fieldKey)

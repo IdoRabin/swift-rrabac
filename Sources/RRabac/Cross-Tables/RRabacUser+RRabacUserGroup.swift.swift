@@ -12,6 +12,7 @@ import MNUtils
 //import DSLogger
 
 final class RRabacUserGroup: RRabacModel {
+    public static var mnuidTypeStr: String = RRabacMNUIDType.userGroup
     static let schema = "user_groups"
 
     // MARK: CodingKeys
@@ -29,7 +30,7 @@ final class RRabacUserGroup: RRabacModel {
     @ID(key: .id)
     var id: UUID?
     var mnUID: MNUID? {
-        return RRabacUserGroupUID(uid: id!, typeStr: MNUIDType.userGroup)
+        return RRabacUserGroupUID(uid: id!, typeStr: RRabacMNUIDType.userGroup)
     }
     
     @Parent(key: CodingKeys.user.fieldKey)
