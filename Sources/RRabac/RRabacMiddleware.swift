@@ -158,3 +158,28 @@ extension RRabacMiddleware : LifecycleBootableHandler {
         dlog?.info("boot")
     }
 }
+
+extension RRabacMiddleware : MNBootStateObserver {
+    
+    public typealias ObjectType = MNRoutes
+    
+    public func willBoot<App>(object: ObjectType, inApp app: App?) where App : AnyObject {
+        dlog?.info("willBoot: \(app.descOrNil)")
+    }
+    
+    public func didBoot<App>(object: ObjectType, inApp app: App?) where App : AnyObject {
+        dlog?.info("didBoot: \(app.descOrNil)")
+    }
+    
+    public func willShutdown<App>(object: ObjectType, inApp app: App?) where App : AnyObject {
+        dlog?.info("willShutdown: \(app.descOrNil)")
+    }
+    
+    public func didShutdown<App>(object: ObjectType, inApp app: App?) where App : AnyObject {
+        dlog?.info("didShutdown: \(app.descOrNil)")
+    }
+    
+    
+    
+    
+}
