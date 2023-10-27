@@ -120,19 +120,22 @@ final public class RRabacMiddleware: Middleware {
 public extension RRabacMiddleware /* + Fluent */ {
     func allMigrations()->[Migration] {
         let result : [Migration] = [
+            
             // RRabac classes / models:
             RRabacHitsoryItem(),
             RRabacPermission(),
             RRabacRole(),
             RRabacPermissionResult(),
-//
-//            RRabacUser(),
+            RRabacUser(),
+            
+            // RRabac complex models:
+            RRabacGroup(),
             
             // Cross-table
-//            RRabacRoleGroup(),
-//            RRabacRolePermission(),
-//            RRabacUserRole(),
-//            RRabacUserGroup(),
+            RRabacRoleGroup(),
+            RRabacRolePermission(),
+            RRabacUserRole(),
+            RRabacUserGroup(),
         ]
         
         return result
@@ -164,19 +167,19 @@ extension RRabacMiddleware : MNBootStateObserver {
     public typealias ObjectType = MNRoutes
     
     public func willBoot<App>(object: ObjectType, inApp app: App?) where App : AnyObject {
-        dlog?.info("willBoot: \(app.descOrNil)")
+        dlog?.info("app willBoot: \(app.descOrNil)")
     }
     
     public func didBoot<App>(object: ObjectType, inApp app: App?) where App : AnyObject {
-        dlog?.info("didBoot: \(app.descOrNil)")
+        dlog?.info("app didBoot: \(app.descOrNil)")
     }
     
     public func willShutdown<App>(object: ObjectType, inApp app: App?) where App : AnyObject {
-        dlog?.info("willShutdown: \(app.descOrNil)")
+        dlog?.info("app willShutdown: \(app.descOrNil)")
     }
     
     public func didShutdown<App>(object: ObjectType, inApp app: App?) where App : AnyObject {
-        dlog?.info("didShutdown: \(app.descOrNil)")
+        dlog?.info("app didShutdown: \(app.descOrNil)")
     }
     
     

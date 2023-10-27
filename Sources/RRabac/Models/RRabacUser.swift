@@ -55,11 +55,11 @@ final public class RRabacUser: RRabacModel, Userable {
     @OptionalField(key: CodingKeys.domain.fieldKey)
     public var domain: String?
     
-//    @Siblings(through: RRabacUserRole.self, from: \.$user, to: \.$role)
-//    public var roles: [RRabacRole]
-//
-//    @Siblings(through: RRabacUserGroup.self, from: \.$user, to: \.$group)
-//    public var groups: [RRabacGroup]
+    @Siblings(through: RRabacUserRole.self, from: \.$user, to: \.$role)
+    public var roles: [RRabacRole]
+
+    @Siblings(through: RRabacUserGroup.self, from: \.$user, to: \.$group)
+    public var groups: [RRabacGroup]
 
     //  MARK: Lifecycle
     // Vapor migration requires empty init

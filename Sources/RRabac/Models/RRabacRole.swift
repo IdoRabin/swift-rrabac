@@ -41,14 +41,14 @@ final public class RRabacRole: RRabacModel {
     @Field(key: CodingKeys.title.fieldKey)
     public var title: String // name of the role
 
-//    @Siblings(through: RRabacUserRole.self, from: \.$role, to: \.$user)
-//    public var users: [RRabacUser]
-//
-//    @Siblings(through: RRabacRolePermission.self, from: \.$role, to: \.$permission)
-//    public var permissions: [RRabacPermission]
-//
-//    @Siblings(through: RRabacRoleGroup.self, from: \.$role, to: \.$group)
-//    public var groups: [RRabacGroup]
+    @Siblings(through: RRabacUserRole.self, from: \.$role, to: \.$user)
+    public var users: [RRabacUser]
+
+    @Siblings(through: RRabacRolePermission.self, from: \.$role, to: \.$permission)
+    public var permissions: [RRabacPermission]
+
+    @Siblings(through: RRabacRoleGroup.self, from: \.$role, to: \.$group)
+    public var groups: [RRabacGroup]
 
     //  MARK: Lifecycle
     // Vapor migration requires empty init
@@ -66,9 +66,9 @@ final public class RRabacRole: RRabacModel {
         return database.schema(Self.schema)
             .id() // primary key
             .field(CodingKeys.title.fieldKey, .string, .required)
-//            .field(CodingKeys.users.fieldKey, .array(of: .uuid))
-//            .field(CodingKeys.permissions.fieldKey, .array(of: .uuid))
-//            .field(CodingKeys.groups.fieldKey, .array(of: .uuid))
+            .field(CodingKeys.users.fieldKey, .array(of: .uuid))
+            .field(CodingKeys.permissions.fieldKey, .array(of: .uuid))
+            .field(CodingKeys.groups.fieldKey, .array(of: .uuid))
             .unique(on: CodingKeys.title.fieldKey)
             .ignoreExisting().create()
     }

@@ -43,8 +43,8 @@ final public class RRabacPermission: RRabacModel {
     public var desc: String // description of the permission
 
     // The roles owning the permission?
-//    @Siblings(through: RRabacRolePermission.self, from: \.$permission, to: \.$role)
-//    public var roles: [RRabacRole]
+    @Siblings(through: RRabacRolePermission.self, from: \.$permission, to: \.$role)
+    public var roles: [RRabacRole]
     
     //  MARK: Lifecycle
     // Vapor migration requires empty init
