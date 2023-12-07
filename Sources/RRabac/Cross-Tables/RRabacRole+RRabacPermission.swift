@@ -13,7 +13,7 @@ import MNUtils
 
 final class RRabacRolePermission: RRabacModel {
     static var mnuidTypeStr: String = RRabacMNUIDType.rolePermission
-    static let schema = "role_permissions"
+    static let schema = "rrabac_role_permissions"
 
     // MARK: CodingKeys
     enum CodingKeys : String, CodingKey, CaseIterable {

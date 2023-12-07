@@ -164,7 +164,7 @@ extension RRabacMiddleware : LifecycleBootableHandler {
 
 extension RRabacMiddleware : MNBootStateObserver {
     
-    public typealias ObjectType = MNRoutes
+    public typealias ObjectType = Vapor.Route
     
     public func willBoot<App>(object: ObjectType, inApp app: App?) where App : AnyObject {
         dlog?.info("app willBoot: \(app.descOrNil)")

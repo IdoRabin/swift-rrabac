@@ -20,6 +20,8 @@ typealias Users = [User]
 fileprivate let dlog : DSLogger? = DLog.forClass("User")
 fileprivate var _userInstancesCount : UInt64 = 0
 
+// TODO: See if can use MNUserPIIType?
+
 enum UsernameType : String, AppModelStrEnum, Codable {
     
     // NOTE: AppModelStrEnum MUST have string values = "my_string_value" for each string case.
@@ -43,7 +45,7 @@ enum UsernameType : String, AppModelStrEnum, Codable {
 final class User : JSONSerializable {
     
     // MARK: Constants
-    static let DEFAULT_USERNAME_DOMAIN = "com.\(AppConstants.APP_NAME)"
+    static let DEFAULT_USERNAME_DOMAIN = MNDomains
     static let USERNAME_QUALIFY_DELIMITER = "⁝" // Triple Colon Operator // https://www.compart.com/en/unicode/U+2AF6
     static let USERNAME_QUALIFY_DELIMITER_HTML = "&#8285;"
     static let USERNAME_QUALIFY_DELIMITER_PERCENT_ESCAPED = "%E2%81%9D"

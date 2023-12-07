@@ -13,7 +13,7 @@ import MNUtils
 
 final class RRabacUserGroup: RRabacModel {
     public static var mnuidTypeStr: String = RRabacMNUIDType.userGroup
-    static let schema = "user_groups"
+    static let schema = "rrabac_user_groups"
 
     // MARK: CodingKeys
     enum CodingKeys : String, CodingKey, CaseIterable {

@@ -19,8 +19,8 @@ let package = Package(
         .package(url: "https://github.com/vapor/fluent.git", from: "4.8.0"),
         
         /// In-House pakcages
-        .package(url: "https://gitlab.com/ido_r_demos/dslogger.git", from: "0.0.1"),
-        .package(url: "https://gitlab.com/ido_r_demos/mnutils.git", from: "0.0.2"),
+        // .package(url: "https://gitlab.com/ido_r_demos/dslogger.git", from: "0.0.1"),
+        // .package(url: "https://gitlab.com/ido_r_demos/mnutils.git", from: "0.0.2"),
         .package(path:"../MNVaporUtils/")
     ],
     targets: [
@@ -30,8 +30,8 @@ let package = Package(
             name: "RRabac",
             dependencies: [
                 // In-House pakcages
-                .product(name: "DSLogger", package: "DSLogger"),
-                .product(name: "MNUtils", package: "MNUtils"),
+                // .product(name: "DSLogger", package: "DSLogger"),
+                // .product(name: "MNUtils", package: "MNUtils"),
                 .product(name: "MNVaporUtils", package: "MNVaporUtils"),
                 
                 .product(name: "Fluent", package: "fluent"),
