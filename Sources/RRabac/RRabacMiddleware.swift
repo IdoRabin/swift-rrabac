@@ -2,17 +2,16 @@
 //  RRabac.swift
 //
 //
-//  Created by Ido on 01/06/2023.
-//
+// Created by Ido Rabin for Bricks on 17/1/2024.
 
 import Foundation
 import Vapor
 import Fluent
 import MNUtils
 import MNVaporUtils
-import DSLogger
+import Logging
 
-fileprivate let dlog : DSLogger? = DLog.forClass("RRabacMiddleware")?.setting(verbose: true)
+fileprivate let dlog : Logger? = Logger(label: "RRabacMiddleware")
 
 public protocol RRabacModel : Model & Content & MNUIDable & AsyncResponseEncodable & Migration {
     var migrationName : String  { get }

@@ -2,8 +2,7 @@
 //  RRabacRole+RRabacGroup.swift
 //  RRabac
 //
-//  Created by Ido on 04/06/2023.
-//
+// Created by Ido Rabin for Bricks on 17/1/2024.
 
 import Foundation
 import Vapor

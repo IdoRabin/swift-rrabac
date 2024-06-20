@@ -2,8 +2,7 @@
 //  Version.swift
 //  
 //
-//  Created by Ido on 05/06/2023.
-//
+// Created by Ido Rabin for Bricks on 17/1/2024.
 
 import Foundation
 import MNUtils

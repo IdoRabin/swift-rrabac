@@ -2,14 +2,12 @@
 //  RRabacUserGroup.swift
 //  
 //
-//  Created by Ido on 01/06/2023.
-//
+// Created by Ido Rabin for Bricks on 17/1/2024.
 
 import Foundation
 import Vapor
 import Fluent
 import MNUtils
-import DSLogger
 
 final public class RRabacGroup: RRabacModel {
     public static var mnuidTypeStr: String = RRabacMNUIDType.group

@@ -3,8 +3,7 @@
 //  User.swift
 //
 //
-//  Created by Ido on 16/07/2022.
-//
+// Created by Ido Rabin for Bricks on 17/1/2024.
 
 import Foundation
 import MNUtils
@@ -17,7 +16,7 @@ import Fluent
 
 typealias Users = [User]
 
-fileprivate let dlog : DSLogger? = DLog.forClass("User")
+fileprivate let dlog : Logger? = Logger(label:"User")
 fileprivate var _userInstancesCount : UInt64 = 0
 
 // TODO: See if can use MNUserPIIType?
